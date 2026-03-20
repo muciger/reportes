@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitor IOAE - 20 marzo 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, Helvetica, sans-serif; background: #f0f4f8; color: #333; font-size: 14px; }
+.banner-bar { background: linear-gradient(90deg, #10312B 0%, #235B4E 50%, #10312B 100%); padding: 10px 20px; }
+.banner-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; color: #fff; font-size: 14px; font-weight: 700; letter-spacing: 1px; }
+.header { background: #1A3A5C; color: #fff; padding: 18px 30px; }
+.header h1 { font-size: 22px; letter-spacing: 2px; font-weight: 700; }
+.header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 4px; letter-spacing: 0.5px; }
+.header .date { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.section-title {
+  font-size: 11px; text-transform: uppercase; color: #2E6DA4;
+  border-bottom: 2px solid #2E6DA4; padding-bottom: 6px; margin: 25px 0 15px;
+  letter-spacing: 1.5px; font-weight: 700;
+}
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.kpi-card {
+  background: #fff; border-radius: 6px; padding: 16px 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-top: 3px solid #2E6DA4;
+}
+.kpi-card.green { border-top-color: #1E8449; }
+.kpi-card.red { border-top-color: #C0392B; }
+.kpi-card.blue { border-top-color: #2E6DA4; }
+.kpi-card.orange { border-top-color: #E67E22; }
+.kpi-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+.kpi-value { font-size: 28px; font-weight: 700; margin: 6px 0 2px; }
+.kpi-value.positive { color: #1E8449; }
+.kpi-value.negative { color: #C0392B; }
+.kpi-value.neutral { color: #2E6DA4; }
+.kpi-detail { font-size: 11px; color: #888; }
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+.chart-box {
+  background: #fff; border-radius: 6px; padding: 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.chart-box canvas { width: 100% !important; height: auto !important; max-height: 280px; }
+.chart-title { font-size: 13px; font-weight: 700; color: #1A3A5C; margin-bottom: 2px; }
+.chart-subtitle { font-size: 11px; color: #888; margin-bottom: 12px; }
+.chart-source { font-size: 10px; color: #aaa; margin-top: 8px; text-align: right; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+.content-box {
+  background: #fff; border-radius: 6px; padding: 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); line-height: 1.6;
+}
+.content-box h3 { font-size: 13px; color: #1A3A5C; margin-bottom: 10px; font-weight: 700; }
+.content-box p { font-size: 13px; margin-bottom: 8px; }
+.highlight-box {
+  background: linear-gradient(135deg, #1A3A5C 0%, #2E6DA4 100%);
+  color: #fff; border-radius: 6px; padding: 20px; margin-bottom: 20px;
+  text-align: center;
+}
+.highlight-box .big { font-size: 36px; font-weight: 700; }
+.highlight-box .label { font-size: 13px; opacity: 0.9; margin-top: 4px; }
+.highlight-box .note { font-size: 11px; opacity: 0.7; font-style: italic; margin-top: 8px; }
+details { background: #fff; border-radius: 6px; padding: 14px 18px; margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+details summary { cursor: pointer; font-size: 12px; font-weight: 700; color: #2E6DA4; text-transform: uppercase; letter-spacing: 1px; }
+details p { font-size: 12px; color: #666; margin-top: 10px; line-height: 1.6; }
+.btn-comunicado {
+  display: inline-block; background: #1A3A5C; color: #fff; padding: 10px 24px;
+  border-radius: 4px; text-decoration: none; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;
+}
+.btn-comunicado:hover { background: #2E6DA4; }
+.footer {
+  background: #1A3A5C; color: rgba(255,255,255,0.7); text-align: center;
+  padding: 14px; font-size: 11px; margin-top: 20px;
+}
+.interval-tag { font-size: 10px; color: #999; display: block; margin-top: 2px; }
+@media (max-width: 768px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .charts-grid, .two-col { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="banner-bar">
+  <div class="banner-inner">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:8px;"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="#fff" opacity="0.3"/><path d="M12 4.5L4 8.5v7L12 19.5l8-4v-7L12 4.5z" fill="#fff" opacity="0.5"/></svg>
+    <span>gob.mx</span>
+    <span style="margin-left:auto;font-size:11px;opacity:0.8;">Secretaria de Economia</span>
+  </div>
+</div>
+
+<div class="header">
+  <h1>MONITOR DE ACTIVIDAD ECONOMICA (IOAE)</h1>
+  <div class="subtitle">Direccion de Analisis Economico</div>
+  <div class="date">20 de marzo de 2026 | Fuente: INEGI</div>
+</div>
+
+<div class="container">
+
+  <div class="section-title">Indicadores Clave</div>
+  <div class="kpi-grid">
+    <div class="kpi-card green">
+      <div class="kpi-label">IOAE Enero 2026</div>
+      <div class="kpi-value positive">+1.94%</div>
+      <div class="kpi-detail">Var. anual estimada IGAE</div>
+      <span class="interval-tag">IC 95%: [0.83%, 3.06%]</span>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">IOAE Febrero 2026</div>
+      <div class="kpi-value positive">+1.22%</div>
+      <div class="kpi-detail">Var. anual estimada IGAE</div>
+      <span class="interval-tag">IC 95%: [0.00%, 2.43%]</span>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">IGAE Dic 2025</div>
+      <div class="kpi-value neutral">+2.40%</div>
+      <div class="kpi-detail">Ultimo dato oficial anual</div>
+      <span class="interval-tag">Serie desestacionalizada</span>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">Var. Mensual Feb 2026</div>
+      <div class="kpi-value positive">+0.14%</div>
+      <div class="kpi-detail">Estimacion mensual IGAE</div>
+      <span class="interval-tag">IC 95%: [-1.06%, 1.34%]</span>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <div class="big">+1.22%</div>
+    <div class="label">Estimacion oportuna de la actividad economica para febrero 2026 (var. anual)</div>
+    <div class="note">El IOAE anticipa un crecimiento anual de 1.2% y mensual de 0.1% del IGAE para febrero de 2026</div>
+  </div>
+
+  <div class="section-title">Evolucion del Indicador</div>
+  <div class="charts-grid">
+    <div class="chart-box">
+      <div class="chart-title">Variacion Anual del IGAE</div>
+      <div class="chart-subtitle">IGAE oficial (linea azul) vs IOAE estimacion (naranja punteada)</div>
+      <canvas id="chartAnual" height="260"></canvas>
+      <div class="chart-source">Fuente: INEGI, Tabulados IOAE. Cifras desestacionalizadas.</div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Variacion Mensual del IGAE</div>
+      <div class="chart-subtitle">IGAE serie desestacionalizada, variacion mes a mes (%)</div>
+      <canvas id="chartMensual" height="260"></canvas>
+      <div class="chart-source">Fuente: INEGI, Tabulados IOAE. Cifras desestacionalizadas.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Indice y Analisis</div>
+  <div class="two-col">
+    <div class="content-box">
+      <h3>Indice IOAE (base 2018=100)</h3>
+      <canvas id="chartIndice" ></canvas>
+      <div class="chart-source">Fuente: INEGI. Base 2018=100, cifras desestacionalizadas.</div>
+    </div>
+    <div class="content-box">
+      <h3>Interpretacion Analitica</h3>
+      <p>La actividad economica de Mexico muestra una recuperacion gradual. Tras registrar contracciones en varios meses de 2024 y 2025, el IGAE cerro diciembre 2025 con un crecimiento anual de 2.40%, el mas alto del segundo semestre.</p>
+      <p>El IOAE estima para enero 2026 un crecimiento anual de 1.94%, y para febrero de 1.22%. La desaceleracion entre enero y febrero refleja la base comparativa mas alta y la incertidumbre en el sector secundario, que muestra una estimacion de -1.89% anual para febrero.</p>
+      <p>Las actividades terciarias mantienen dinamismo: el IOAE estima 2.42% anual para febrero 2026. En contraste, las actividades secundarias registran una estimacion negativa de -1.89%, afectadas por la debilidad manufacturera vinculada a la incertidumbre comercial con EE.UU.</p>
+      <p>BBVA Research proyecta 1.8% de crecimiento del PIB para 2026. Banxico elevo su estimacion a 1.6%. El PIB de 2025 crecio 0.8% respecto a 2024.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Desagregacion Sectorial</div>
+  <div class="charts-grid">
+    <div class="chart-box">
+      <div class="chart-title">Actividades Secundarias (var. anual)</div>
+      <div class="chart-subtitle">IGAE sectorial vs IOAE estimacion</div>
+      <canvas id="chartSec" ></canvas>
+      <div class="chart-source">Fuente: INEGI, Tabulados IOAE.</div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Actividades Terciarias (var. anual)</div>
+      <div class="chart-subtitle">IGAE sectorial vs IOAE estimacion</div>
+      <canvas id="chartTer" ></canvas>
+      <div class="chart-source">Fuente: INEGI, Tabulados IOAE.</div>
+    </div>
+  </div>
+
+  <details>
+    <summary>Nota Metodologica</summary>
+    <p>El Indicador Oportuno de la Actividad Economica (IOAE) proporciona estimaciones oportunas mensuales de la actividad economica de Mexico obtenidas a traves de modelos de nowcasting. Genera estimaciones de las variaciones porcentuales anuales y niveles del Indicador Global de la Actividad Economica (IGAE) y dos grandes actividades economicas para meses recientes y posteriores al cierre de cifras oficiales.</p>
+    <p>La metodologia se basa en utilizar variables economicas, financieras y fuentes no tradicionales para construir un factor dinamico correlacionado y oportuno. La estimacion del factor dinamico se hace siguiendo la metodologia de Doz et al. (2011), basada en componentes principales y suavizamiento de Kalman.</p>
+    <p>Las estimaciones se realizan con series desestacionalizadas. Los intervalos de confianza se reportan al 95%.</p>
+  </details>
+
+  <a class="btn-comunicado" href="https://www.inegi.org.mx/investigacion/ioae/" target="_blank">VER COMUNICADO COMPLETO</a>
+
+</div>
+
+<div class="footer">
+  OSFPLAN Mexico | Monitor de Indicadores Economicos | Generado automaticamente el 20 de marzo de 2026
+</div>
+
+<script>
+// DATA from INEGI IOAE XLSX tabulados - ALL REAL DATA
+// Variación anual IGAE (official) last 14 months
+const vaLabels = ["Ene25","Feb25","Mar25","Abr25","May25","Jun25","Jul25","Ago25","Sep25","Oct25","Nov25","Dic25","Ene26","Feb26"];
+const vaIGAE = [-0.22,0.27,-0.18,1.30,0.59,0.58,-0.97,0.43,-0.28,1.69,1.09,2.40,null,null];
+const vaIOAE = [null,null,null,null,null,null,null,null,null,null,null,null,1.94,1.22];
+const vaIOAEsup = [null,null,null,null,null,null,null,null,null,null,null,null,3.06,2.43];
+const vaIOAEinf = [null,null,null,null,null,null,null,null,null,null,null,null,0.83,0.00];
+
+const ctx1 = document.getElementById('chartAnual').getContext('2d');
+new Chart(ctx1, {
+  type: 'line',
+  data: {
+    labels: vaLabels,
+    datasets: [
+      {
+        label: 'IGAE (oficial)',
+        data: vaIGAE,
+        borderColor: '#2E6DA4',
+        backgroundColor: 'rgba(46,109,164,0.1)',
+        borderWidth: 2.5,
+        pointRadius: 2,
+        pointHoverRadius: 5,
+        tension: 0.3,
+        fill: false,
+        spanGaps: false
+      },
+      {
+        label: 'IOAE (estimacion)',
+        data: vaIOAE,
+        borderColor: '#E67E22',
+        borderWidth: 2.5,
+        borderDash: [6, 4],
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: '#E67E22',
+        tension: 0,
+        fill: false,
+        spanGaps: false
+      },
+      {
+        label: 'IC Superior',
+        data: vaIOAEsup,
+        borderColor: 'rgba(230,126,34,0.3)',
+        borderWidth: 1,
+        borderDash: [3, 3],
+        pointRadius: 0,
+        fill: false,
+        spanGaps: false
+      },
+      {
+        label: 'IC Inferior',
+        data: vaIOAEinf,
+        borderColor: 'rgba(230,126,34,0.3)',
+        borderWidth: 1,
+        borderDash: [3, 3],
+        pointRadius: 0,
+        fill: '-1',
+        backgroundColor: 'rgba(230,126,34,0.08)',
+        spanGaps: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, filter: (item) => item.text !== 'IC Superior' && item.text !== 'IC Inferior' } },
+      tooltip: { mode: 'index', intersect: false }
+    },
+    scales: {
+      y: { 
+        ticks: { callback: v => v.toFixed(1) + '%', font: { size: 10 } },
+        grid: { color: 'rgba(0,0,0,0.05)' }
+      },
+      x: { ticks: { font: { size: 9 }, maxRotation: 45 }, grid: { display: false } }
+    },
+    interaction: { mode: 'nearest', axis: 'x', intersect: false }
+  }
+});
+
+// Variación mensual IGAE (bar chart) - last 14 months from XLSX
+const vmLabels = ["Ene25","Feb25","Mar25","Abr25","May25","Jun25","Jul25","Ago25","Sep25","Oct25","Nov25","Dic25","Ene26","Feb26"];
+const vmIGAE = [0.23,0.86,-0.15,0.10,0.29,0.03,-0.31,0.44,-0.38,1.01,-0.15,0.39,null,null];
+const vmIOAE = [null,null,null,null,null,null,null,null,null,null,null,null,-0.21,0.14];
+const vmAll = vmIGAE.map((v,i) => v !== null ? v : vmIOAE[i]);
+const vmColors = vmAll.map(v => v === null ? '#ccc' : (v >= 0 ? '#1E8449' : '#C0392B'));
+const vmBorders = vmAll.map((v,i) => vmIOAE[i] !== null ? '#E67E22' : 'transparent');
+
+const ctx2 = document.getElementById('chartMensual').getContext('2d');
+new Chart(ctx2, {
+  type: 'bar',
+  data: {
+    labels: vmLabels,
+    datasets: [{
+      label: 'Var. mensual (%)',
+      data: vmAll,
+      backgroundColor: vmColors,
+      borderColor: vmBorders,
+      borderWidth: vmAll.map((v,i) => vmIOAE[i] !== null ? 2 : 0),
+      borderRadius: 3,
+      barPercentage: 0.7
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => (ctx.parsed.y !== null ? ctx.parsed.y.toFixed(2) : 'N/D') + '%' } }
+    },
+    scales: {
+      y: {
+        ticks: { callback: v => v.toFixed(1) + '%', font: { size: 10 } },
+        grid: { color: 'rgba(0,0,0,0.05)' }
+      },
+      x: { ticks: { font: { size: 9 }, maxRotation: 45 }, grid: { display: false } }
+    }
+  }
+});
+
+// Índice IOAE (base 2018=100) - from XLSX real data
+const idxLabels = ["Ene25","Feb25","Mar25","Abr25","May25","Jun25","Jul25","Ago25","Sep25","Oct25","Nov25","Dic25","Ene26","Feb26"];
+const idxIGAE = [103.82,104.72,104.56,104.67,104.97,105.01,104.68,105.14,104.75,105.81,105.65,106.06,null,null];
+const idxIOAE = [null,null,null,null,null,null,null,null,null,null,null,null,105.84,105.99];
+
+const ctx3 = document.getElementById('chartIndice').getContext('2d');
+new Chart(ctx3, {
+  type: 'line',
+  data: {
+    labels: idxLabels,
+    datasets: [
+      {
+        label: 'IGAE (oficial)',
+        data: idxIGAE,
+        borderColor: '#2E6DA4',
+        borderWidth: 2,
+        pointRadius: 2,
+        tension: 0.3,
+        fill: false
+      },
+      {
+        label: 'IOAE (estimacion)',
+        data: idxIOAE,
+        borderColor: '#E67E22',
+        borderWidth: 2,
+        borderDash: [6, 4],
+        pointRadius: 4,
+        pointBackgroundColor: '#E67E22',
+        fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: true, position: 'bottom', labels: { font: { size: 10 } } },
+      tooltip: { mode: 'index', intersect: false }
+    },
+    scales: {
+      y: {
+        title: { display: true, text: 'Indice (base 2018=100)', font: { size: 10 } },
+        ticks: { font: { size: 10 } },
+        grid: { color: 'rgba(0,0,0,0.05)' }
+      },
+      x: { ticks: { font: { size: 9 }, maxRotation: 45 }, grid: { display: false } }
+    }
+  }
+});
+
+// Actividades Secundarias - var anual
+const secLabels = ["Sep25","Oct25","Nov25","Dic25","Ene26","Feb26"];
+const secIGAE = [-3.11,-0.52,-0.10,1.34,-0.07,null];
+const secIOAE = [null,null,null,null,null,-1.89];
+const ctx4 = document.getElementById('chartSec').getContext('2d');
+new Chart(ctx4, {
+  type: 'line',
+  data: {
+    labels: secLabels,
+    datasets: [
+      { label: 'IGAE Sec. (oficial)', data: secIGAE, borderColor: '#2E6DA4', borderWidth: 2, pointRadius: 3, tension: 0.3, fill: false, spanGaps: false },
+      { label: 'IOAE Sec. (est.)', data: secIOAE, borderColor: '#E67E22', borderWidth: 2, borderDash: [6,4], pointRadius: 5, pointBackgroundColor: '#E67E22', fill: false, spanGaps: false }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+    scales: {
+      y: { ticks: { callback: v => v.toFixed(1) + '%', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+      x: { ticks: { font: { size: 9 } }, grid: { display: false } }
+    }
+  }
+});
+
+// Actividades Terciarias - var anual
+const terLabels = ["Sep25","Oct25","Nov25","Dic25","Ene26","Feb26"];
+const terIGAE = [0.97,2.41,1.45,2.80,null,null];
+const terIOAE = [null,null,null,null,2.83,2.42];
+const ctx5 = document.getElementById('chartTer').getContext('2d');
+new Chart(ctx5, {
+  type: 'line',
+  data: {
+    labels: terLabels,
+    datasets: [
+      { label: 'IGAE Ter. (oficial)', data: terIGAE, borderColor: '#2E6DA4', borderWidth: 2, pointRadius: 3, tension: 0.3, fill: false, spanGaps: false },
+      { label: 'IOAE Ter. (est.)', data: terIOAE, borderColor: '#E67E22', borderWidth: 2, borderDash: [6,4], pointRadius: 5, pointBackgroundColor: '#E67E22', fill: false, spanGaps: false }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+    scales: {
+      y: { ticks: { callback: v => v.toFixed(1) + '%', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+      x: { ticks: { font: { size: 9 } }, grid: { display: false } }
+    }
+  }
+});
+</script>
+
+</body>
+</html>

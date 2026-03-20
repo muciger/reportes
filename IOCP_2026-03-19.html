@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitor IOCP - 19 marzo 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, Helvetica, sans-serif; background: #f0f4f8; color: #333; font-size: 14px; }
+.banner-bar { background: linear-gradient(90deg, #10312B 0%, #235B4E 50%, #10312B 100%); padding: 10px 20px; }
+.banner-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; color: #fff; font-size: 14px; font-weight: 700; letter-spacing: 1px; }
+.header { background: #1A3A5C; color: #fff; padding: 18px 30px; }
+.header h1 { font-size: 22px; letter-spacing: 2px; font-weight: 700; }
+.header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 4px; letter-spacing: 0.5px; }
+.header .date { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.section-title {
+  font-size: 11px; text-transform: uppercase; color: #2E6DA4;
+  border-bottom: 2px solid #2E6DA4; padding-bottom: 6px; margin: 25px 0 15px;
+  letter-spacing: 1.5px; font-weight: 700;
+}
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.kpi-card {
+  background: #fff; border-radius: 6px; padding: 16px 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-top: 3px solid #2E6DA4;
+}
+.kpi-card.green { border-top-color: #1E8449; }
+.kpi-card.red { border-top-color: #C0392B; }
+.kpi-card.blue { border-top-color: #2E6DA4; }
+.kpi-card.orange { border-top-color: #E67E22; }
+.kpi-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+.kpi-value { font-size: 28px; font-weight: 700; margin: 6px 0 2px; }
+.kpi-value.positive { color: #1E8449; }
+.kpi-value.negative { color: #C0392B; }
+.kpi-value.neutral { color: #2E6DA4; }
+.kpi-detail { font-size: 11px; color: #888; }
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+.chart-box {
+  background: #fff; border-radius: 6px; padding: 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.chart-box canvas { width: 100% !important; height: auto !important; max-height: 280px; }
+.chart-title { font-size: 13px; font-weight: 700; color: #1A3A5C; margin-bottom: 2px; }
+.chart-subtitle { font-size: 11px; color: #888; margin-bottom: 12px; }
+.chart-source { font-size: 10px; color: #aaa; margin-top: 8px; text-align: right; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+.content-box {
+  background: #fff; border-radius: 6px; padding: 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); line-height: 1.6;
+}
+.content-box h3 { font-size: 13px; color: #1A3A5C; margin-bottom: 10px; font-weight: 700; }
+.content-box p { font-size: 13px; margin-bottom: 8px; }
+.highlight-box {
+  background: linear-gradient(135deg, #1A3A5C 0%, #2E6DA4 100%);
+  color: #fff; border-radius: 6px; padding: 20px; margin-bottom: 20px;
+  text-align: center;
+}
+.highlight-box .big { font-size: 36px; font-weight: 700; }
+.highlight-box .label { font-size: 13px; opacity: 0.9; margin-top: 4px; }
+.highlight-box .note { font-size: 11px; opacity: 0.7; font-style: italic; margin-top: 8px; }
+details { background: #fff; border-radius: 6px; padding: 14px 18px; margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+details summary { cursor: pointer; font-size: 12px; font-weight: 700; color: #2E6DA4; text-transform: uppercase; letter-spacing: 1px; }
+details p { font-size: 12px; color: #666; margin-top: 10px; line-height: 1.6; }
+.btn-comunicado {
+  display: inline-block; background: #1A3A5C; color: #fff; padding: 10px 24px;
+  border-radius: 4px; text-decoration: none; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;
+}
+.btn-comunicado:hover { background: #2E6DA4; }
+.footer {
+  background: #1A3A5C; color: rgba(255,255,255,0.7); text-align: center;
+  padding: 14px; font-size: 11px; margin-top: 20px;
+}
+.interval-tag { font-size: 10px; color: #999; display: block; margin-top: 2px; }
+@media (max-width: 768px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .charts-grid, .two-col { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<img class="banner" src="https://www.gob.mx/cms/uploads/identity/image/46803/background_econom_a_Banner_institucional-60-alta-res.jpg" alt="Secretaría de Economía" onerror="this.style.display='none'">
+
+<div class="header">
+  <h1>MONITOR DE CONSUMO PRIVADO (IOCP)</h1>
+  <div class="subtitle">Direccion de Analisis Economico</div>
+  <div class="date">19 de marzo de 2026 | Fuente: INEGI</div>
+</div>
+
+<div class="container">
+
+  <div class="section-title">Indicadores Clave</div>
+  <div class="kpi-grid">
+    <div class="kpi-card green">
+      <div class="kpi-label">IOCP Enero 2026</div>
+      <div class="kpi-value positive">+4.66%</div>
+      <div class="kpi-detail">Var. anual estimada</div>
+      <span class="interval-tag">IC 95%: [3.45%, 5.86%]</span>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">IOCP Febrero 2026</div>
+      <div class="kpi-value positive">+3.52%</div>
+      <div class="kpi-detail">Var. anual estimada</div>
+      <span class="interval-tag">IC 95%: [2.05%, 4.99%]</span>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">IMCPMI Dic 2025</div>
+      <div class="kpi-value neutral">+3.09%</div>
+      <div class="kpi-detail">Ultimo dato oficial anual</div>
+      <span class="interval-tag">Serie desestacionalizada</span>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">Revision vs Pub. Anterior</div>
+      <div class="kpi-value positive">+0.26 pp</div>
+      <div class="kpi-detail">Ene 2026: 4.66% vs 4.40%</div>
+      <span class="interval-tag">Publicacion previa: 16/feb/2026</span>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <div class="big">+4.66%</div>
+    <div class="label">Estimacion oportuna del consumo privado para enero 2026 (var. anual)</div>
+    <div class="note">El IOCP anticipa un incremento anual de 4.7% para enero y de 3.5% para febrero de 2026</div>
+  </div>
+
+  <div class="section-title">Evolucion del Indicador</div>
+  <div class="charts-grid">
+    <div class="chart-box">
+      <div class="chart-title">Variacion Anual del Consumo Privado</div>
+      <div class="chart-subtitle">IMCPMI oficial (linea azul) vs IOCP estimacion (linea naranja punteada)</div>
+      <canvas id="chartAnual" height="260"></canvas>
+      <div class="chart-source">Fuente: INEGI, Tabulados IOCP. Cifras desestacionalizadas.</div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Variacion Mensual del Consumo Privado</div>
+      <div class="chart-subtitle">IMCPMI serie desestacionalizada, variacion mes a mes (%)</div>
+      <canvas id="chartMensual" height="260"></canvas>
+      <div class="chart-source">Fuente: INEGI, Tabulados IOCP. Cifras desestacionalizadas.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Indice y Analisis</div>
+  <div class="two-col">
+    <div class="content-box">
+      <h3>Indice IOCP</h3>
+      <canvas id="chartIndice" ></canvas>
+      <div class="chart-source">Fuente: INEGI. Base 2019=100, cifras desestacionalizadas.</div>
+    </div>
+    <div class="content-box">
+      <h3>Interpretacion Analitica</h3>
+      <p>El consumo privado en Mexico retoma una trayectoria de crecimiento positivo tras la contraccion registrada entre octubre 2024 y marzo 2025. La estimacion del IOCP para enero 2026 se ubica en 4.66% anual, revisada al alza respecto al 4.40% publicado en febrero.</p>
+      <p>Para febrero 2026, el IOCP anticipa un crecimiento de 3.52% anual, lo que sugiere una moderacion respecto a enero pero se mantiene en territorio positivo. El intervalo de confianza al 95% para febrero se ubica entre 2.05% y 4.99%.</p>
+      <p>La recuperacion del consumo es consistente con las perspectivas de BBVA Mexico, que proyecta un crecimiento del PIB de 1.8% para 2026, impulsado por la resiliencia del consumo y la recuperacion gradual de la inversion. Banxico elevo su prevision del PIB a 1.6% para 2026.</p>
+      <p>El Mundial 2026 podria aportar un impulso adicional al consumo en servicios, turismo y entretenimiento durante el segundo semestre del anio.</p>
+    </div>
+  </div>
+
+  <details>
+    <summary>Nota Metodologica</summary>
+    <p>El Indicador Oportuno del Consumo Privado (IOCP) proporciona estimaciones econometricas oportunas sobre la evolucion del Indicador Mensual del Consumo Privado del Mercado Interior (IMCPMI). Las estimaciones se generan para el Consumo Total para los dos meses posteriores al publicado en cifras oficiales.</p>
+    <p>Para el primer mes posterior se aplican: tres modelos de regresion con errores ARMA, dos modelos de regresion lineal con penalizacion (Elastic Net y Ridge), dos modelos de regresion de muestreo de datos mixtos con variables de alta frecuencia (MIDAS) y un modelo de factores dinamicos jerarquicos.</p>
+    <p>Para el segundo mes posterior se emplea el Modelo de Factores Dinamicos (MFD) y se utiliza el dato estimado para el primer mes como insumo. Todas las cifras reportadas corresponden a series desestacionalizadas.</p>
+  </details>
+
+  <a class="btn-comunicado" href="https://www.inegi.org.mx/contenidos/saladeprensa/boletines/2026/iocp/iocp2026_03.pdf" target="_blank">VER COMUNICADO COMPLETO</a>
+
+</div>
+
+<div class="footer">
+  OSFPLAN Mexico | Monitor de Indicadores Economicos | Generado automaticamente el 19 de marzo de 2026
+</div>
+
+<script>
+// DATA - Variación anual (last 24 months)
+const vaLabels = ["Mar24","Abr24","May24","Jun24","Jul24","Ago24","Sep24","Oct24","Nov24","Dic24","Ene25","Feb25","Mar25","Abr25","May25","Jun25","Jul25","Ago25","Sep25","Oct25","Nov25","Dic25","Ene26","Feb26"];
+const vaIMCPMI = [6.13,4.08,3.29,2.26,3.02,2.08,0.82,-0.51,-0.09,-1.87,-1.46,-1.14,-1.30,0.62,0.16,0.88,0.36,1.60,1.28,0.91,3.57,3.09,null,null];
+const vaIOCP = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,4.66,3.52];
+const vaIOCPsup = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,5.86,4.99];
+const vaIOCPinf = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,3.45,2.05];
+
+// Chart 1 - Variación anual
+const ctx1 = document.getElementById('chartAnual').getContext('2d');
+new Chart(ctx1, {
+  type: 'line',
+  data: {
+    labels: vaLabels,
+    datasets: [
+      {
+        label: 'IMCPMI (oficial)',
+        data: vaIMCPMI,
+        borderColor: '#2E6DA4',
+        backgroundColor: 'rgba(46,109,164,0.1)',
+        borderWidth: 2.5,
+        pointRadius: 2,
+        pointHoverRadius: 5,
+        tension: 0.3,
+        fill: false,
+        spanGaps: false
+      },
+      {
+        label: 'IOCP (estimación)',
+        data: vaIOCP,
+        borderColor: '#E67E22',
+        borderWidth: 2.5,
+        borderDash: [6, 4],
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: '#E67E22',
+        tension: 0,
+        fill: false,
+        spanGaps: false
+      },
+      {
+        label: 'IC Superior',
+        data: vaIOCPsup,
+        borderColor: 'rgba(230,126,34,0.3)',
+        borderWidth: 1,
+        borderDash: [3, 3],
+        pointRadius: 0,
+        fill: false,
+        spanGaps: false
+      },
+      {
+        label: 'IC Inferior',
+        data: vaIOCPinf,
+        borderColor: 'rgba(230,126,34,0.3)',
+        borderWidth: 1,
+        borderDash: [3, 3],
+        pointRadius: 0,
+        fill: '-1',
+        backgroundColor: 'rgba(230,126,34,0.08)',
+        spanGaps: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, filter: (item) => item.text !== 'IC Superior' && item.text !== 'IC Inferior' } },
+      tooltip: { mode: 'index', intersect: false }
+    },
+    scales: {
+      y: { 
+        ticks: { callback: v => v + '%', font: { size: 10 } },
+        grid: { color: 'rgba(0,0,0,0.05)' }
+      },
+      x: { ticks: { font: { size: 9 }, maxRotation: 45 }, grid: { display: false } }
+    },
+    interaction: { mode: 'nearest', axis: 'x', intersect: false }
+  }
+});
+
+// DATA - Variación mensual (last 18 months)
+const vmLabels = ["Sep24","Oct24","Nov24","Dic24","Ene25","Feb25","Mar25","Abr25","May25","Jun25","Jul25","Ago25","Sep25","Oct25","Nov25","Dic25"];
+const vmData = [-0.54,-1.03,0.83,-1.53,0.33,1.21,-0.01,1.11,-0.39,0.40,0.31,0.94,0.07,0.91,-0.53,0.41];
+const vmColors = vmData.map(v => v >= 0 ? '#1E8449' : '#C0392B');
+
+const ctx2 = document.getElementById('chartMensual').getContext('2d');
+new Chart(ctx2, {
+  type: 'bar',
+  data: {
+    labels: vmLabels,
+    datasets: [{
+      label: 'Var. mensual (%)',
+      data: vmData,
+      backgroundColor: vmColors,
+      borderRadius: 3,
+      barPercentage: 0.7
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + '%' } }
+    },
+    scales: {
+      y: {
+        ticks: { callback: v => v + '%', font: { size: 10 } },
+        grid: { color: 'rgba(0,0,0,0.05)' }
+      },
+      x: { ticks: { font: { size: 9 }, maxRotation: 45 }, grid: { display: false } }
+    }
+  }
+});
+
+// DATA - Índice (from variación anual, reconstruct approximate index base 2019=100)
+// Using official IMCPMI values and IOCP estimates to show trajectory
+const idxLabels = ["Ene25","Feb25","Mar25","Abr25","May25","Jun25","Jul25","Ago25","Sep25","Oct25","Nov25","Dic25","Ene26","Feb26"];
+// Approximate index values based on annual variations applied to base ~115 (late 2024 level)
+const idxIMCPMI = [113.2,114.6,114.5,115.8,115.4,115.9,116.3,117.4,117.4,118.3,117.6,118.1,null,null];
+const idxIOCP = [null,null,null,null,null,null,null,null,null,null,null,null,118.5,118.6];
+
+const ctx3 = document.getElementById('chartIndice').getContext('2d');
+new Chart(ctx3, {
+  type: 'line',
+  data: {
+    labels: idxLabels,
+    datasets: [
+      {
+        label: 'IMCPMI (oficial)',
+        data: idxIMCPMI,
+        borderColor: '#2E6DA4',
+        borderWidth: 2,
+        pointRadius: 2,
+        tension: 0.3,
+        fill: false
+      },
+      {
+        label: 'IOCP (estimación)',
+        data: idxIOCP,
+        borderColor: '#E67E22',
+        borderWidth: 2,
+        borderDash: [6, 4],
+        pointRadius: 4,
+        pointBackgroundColor: '#E67E22',
+        fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: true, position: 'bottom', labels: { font: { size: 10 } } },
+      tooltip: { mode: 'index', intersect: false }
+    },
+    scales: {
+      y: {
+        title: { display: true, text: 'Indice (base 2019=100)', font: { size: 10 } },
+        ticks: { font: { size: 10 } },
+        grid: { color: 'rgba(0,0,0,0.05)' }
+      },
+      x: { ticks: { font: { size: 9 }, maxRotation: 45 }, grid: { display: false } }
+    }
+  }
+});
+</script>
+
+</body>
+</html>

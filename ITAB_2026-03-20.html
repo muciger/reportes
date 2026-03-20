@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitor ITAB - 20 marzo 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, Helvetica, sans-serif; background: #f0f4f8; color: #333; font-size: 14px; }
+.banner-bar { background: linear-gradient(90deg, #10312B 0%, #235B4E 50%, #10312B 100%); padding: 10px 20px; }
+.banner-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; color: #fff; font-size: 14px; font-weight: 700; letter-spacing: 1px; }
+.header { background: #1A3A5C; color: #fff; padding: 18px 30px; }
+.header h1 { font-size: 22px; letter-spacing: 2px; font-weight: 700; }
+.header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 4px; letter-spacing: 0.5px; }
+.header .date { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.section-title {
+  font-size: 11px; text-transform: uppercase; color: #2E6DA4;
+  border-bottom: 2px solid #2E6DA4; padding-bottom: 6px; margin: 25px 0 15px;
+  letter-spacing: 1.5px; font-weight: 700;
+}
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.kpi-card {
+  background: #fff; border-radius: 6px; padding: 16px 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-top: 3px solid #2E6DA4;
+}
+.kpi-card.green { border-top-color: #1E8449; }
+.kpi-card.red { border-top-color: #C0392B; }
+.kpi-card.blue { border-top-color: #2E6DA4; }
+.kpi-card.orange { border-top-color: #E67E22; }
+.kpi-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+.kpi-value { font-size: 28px; font-weight: 700; margin: 6px 0 2px; }
+.kpi-value.positive { color: #1E8449; }
+.kpi-value.negative { color: #C0392B; }
+.kpi-value.neutral { color: #2E6DA4; }
+.kpi-detail { font-size: 11px; color: #888; }
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+.chart-box {
+  background: #fff; border-radius: 6px; padding: 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.chart-box canvas { width: 100% !important; height: auto !important; max-height: 280px; }
+.chart-title { font-size: 13px; font-weight: 700; color: #1A3A5C; margin-bottom: 2px; }
+.chart-subtitle { font-size: 11px; color: #888; margin-bottom: 12px; }
+.chart-source { font-size: 10px; color: #aaa; margin-top: 8px; text-align: right; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+.content-box {
+  background: #fff; border-radius: 6px; padding: 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); line-height: 1.6;
+}
+.content-box h3 { font-size: 13px; color: #1A3A5C; margin-bottom: 10px; font-weight: 700; }
+.content-box p { font-size: 13px; margin-bottom: 8px; }
+.content-box table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px; }
+.content-box th { background: #f0f4f8; padding: 8px 10px; text-align: left; font-weight: 700; color: #1A3A5C; border-bottom: 2px solid #2E6DA4; }
+.content-box td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+.content-box td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.highlight-box {
+  background: linear-gradient(135deg, #1A3A5C 0%, #2E6DA4 100%);
+  color: #fff; border-radius: 6px; padding: 20px; margin-bottom: 20px;
+  text-align: center;
+}
+.highlight-box .big { font-size: 36px; font-weight: 700; }
+.highlight-box .label { font-size: 13px; opacity: 0.9; margin-top: 4px; }
+.highlight-box .note { font-size: 11px; opacity: 0.7; font-style: italic; margin-top: 8px; }
+details { background: #fff; border-radius: 6px; padding: 14px 18px; margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+details summary { cursor: pointer; font-size: 12px; font-weight: 700; color: #2E6DA4; text-transform: uppercase; letter-spacing: 1px; }
+details p { font-size: 12px; color: #666; margin-top: 10px; line-height: 1.6; }
+.btn-comunicado {
+  display: inline-block; background: #1A3A5C; color: #fff; padding: 10px 24px;
+  border-radius: 4px; text-decoration: none; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;
+}
+.btn-comunicado:hover { background: #2E6DA4; }
+.footer {
+  background: #1A3A5C; color: rgba(255,255,255,0.7); text-align: center;
+  padding: 14px; font-size: 11px; margin-top: 20px;
+}
+@media (max-width: 768px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .charts-grid, .two-col { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="banner-bar">
+  <div class="banner-inner">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:8px;"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="#fff" opacity="0.3"/><path d="M12 4.5L4 8.5v7L12 19.5l8-4v-7L12 4.5z" fill="#fff" opacity="0.5"/></svg>
+    <span>gob.mx</span>
+    <span style="margin-left:auto;font-size:11px;opacity:0.8;">Secretaria de Economia</span>
+  </div>
+</div>
+
+<div class="header">
+  <h1>MONITOR DE AHORRO BRUTO (ITAB)</h1>
+  <div class="subtitle">Direccion de Analisis Economico</div>
+  <div class="date">20 de marzo de 2026 | Fuente: INEGI</div>
+</div>
+
+<div class="container">
+
+  <div class="section-title">Indicadores Clave</div>
+  <div class="kpi-grid">
+    <div class="kpi-card blue">
+      <div class="kpi-label">Ahorro Bruto 4T 2025</div>
+      <div class="kpi-value neutral">19.0%</div>
+      <div class="kpi-detail">Porcentaje del PIB nominal</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Economia Interna 4T 2025</div>
+      <div class="kpi-value positive">16.9%</div>
+      <div class="kpi-detail">Porcentaje del PIB nominal</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Resto del Mundo 4T 2025</div>
+      <div class="kpi-value positive">2.0%</div>
+      <div class="kpi-detail">Porcentaje del PIB nominal</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Var. Trimestral Ahorro</div>
+      <div class="kpi-value positive">+3.5%</div>
+      <div class="kpi-detail">Crecimiento vs 3T 2025</div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <div class="big">+3.5%</div>
+    <div class="label">Crecimiento trimestral del ahorro bruto en el cuarto trimestre de 2025</div>
+    <div class="note">Oferta y demanda global aumentaron 2.4%. Ahorro bruto anual 2025: 18.6% del PIB</div>
+  </div>
+
+  <div class="section-title">Composicion del Ahorro Bruto</div>
+  <div class="charts-grid">
+    <div class="chart-box">
+      <div class="chart-title">Ahorro Bruto como % del PIB</div>
+      <div class="chart-subtitle">Economia interna (azul) + Resto del mundo (naranja) = Ahorro bruto total</div>
+      <canvas id="chartPIB" height="260"></canvas>
+      <div class="chart-source">Fuente: INEGI, ITAB Base 2018. Cifras originales.</div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Ahorro Bruto en Millones de Pesos</div>
+      <div class="chart-subtitle">Valores anualizados, cifras corrientes</div>
+      <canvas id="chartMDP" height="260"></canvas>
+      <div class="chart-source">Fuente: INEGI, Tabulados ITAB. Millones de pesos anualizados.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Detalle Trimestral 2024-2025</div>
+  <div class="two-col">
+    <div class="content-box">
+      <h3>Participacion Porcentual del PIB</h3>
+      <table>
+        <thead>
+          <tr><th>Concepto</th><th>2024 Anual</th><th>2025 1T</th><th>2025 2T</th><th>2025 3T</th><th>2025 4T</th><th>2025 Anual</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Economia interna</td><td class="num">17.8</td><td class="num">15.7</td><td class="num">18.1</td><td class="num">19.0</td><td class="num">16.9</td><td class="num">18.1</td></tr>
+          <tr><td>Resto del mundo</td><td class="num">0.7</td><td class="num">3.1</td><td class="num">1.0</td><td class="num">-1.5</td><td class="num">2.0</td><td class="num">0.5</td></tr>
+          <tr style="font-weight:700"><td>Ahorro bruto</td><td class="num">18.6</td><td class="num">18.9</td><td class="num">19.1</td><td class="num">17.8</td><td class="num">19.0</td><td class="num">18.6</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content-box">
+      <h3>Interpretacion Analitica</h3>
+      <p>El ahorro bruto se recupero en el 4T 2025, alcanzando 19.0% del PIB tras el 17.8% del 3T. La economia interna aporto 16.9% y el resto del mundo 2.0%, revirtiendo el deficit externo del 3T (-1.5%).</p>
+      <p>La oferta y demanda global crecieron 2.4% trimestral, en linea con la expansion del PIB de 0.8% trimestral en el 4T 2025. El ahorro bruto anual de 2025 se ubico en 18.6% del PIB, identico al de 2024.</p>
+      <p>La Formacion Bruta de Capital Fijo descendio 1.6% trimestral en el mismo periodo, lo que indica que la recuperacion del ahorro no se traduce aun en mayor inversion productiva. La incertidumbre comercial con EE.UU. y la revision del T-MEC mantienen contenida la inversion privada.</p>
+    </div>
+  </div>
+
+  <details>
+    <summary>Nota Metodologica</summary>
+    <p>El Indicador Trimestral del Ahorro Bruto (ITAB) da seguimiento a una variable fundamental de la economia: el ahorro bruto, que representa la parte del ingreso disponible que no se gasta en bienes y servicios de consumo final, permitiendo con estos recursos la adquisicion de activos por parte de los agentes economicos.</p>
+    <p>El ahorro se descompone en dos fuentes: la economia interna (S.1), que refleja el ahorro generado por los residentes del pais, y el resto del mundo (S.2), que corresponde al ahorro externo neto. El indicador se presenta como porcentaje del PIB nominal a precios corrientes, con base en el Sistema de Cuentas Nacionales de Mexico, ano base 2018.</p>
+    <p>Las cifras de 2025 4T son preliminares (P). Los trimestres 1T a 3T de 2025 fueron revisados (R). La suma de parciales puede no coincidir con el total por redondeo.</p>
+  </details>
+
+  <a class="btn-comunicado" href="https://www.inegi.org.mx/temas/itab/" target="_blank">VER COMUNICADO COMPLETO</a>
+
+</div>
+
+<div class="footer">
+  OSFPLAN Mexico | Monitor de Indicadores Economicos | Generado automaticamente el 20 de marzo de 2026
+</div>
+
+<script>
+// Ahorro bruto como % del PIB - data from INEGI page
+const pibLabels = ["2023 1T","2023 2T","2023 3T","2023 4T","2024 1T","2024 2T","2024 3T","2024 4T","2025 1T","2025 2T","2025 3T","2025 4T"];
+const econInterna = [14.3,18.2,18.2,18.3,12.7,18.9,18.8,20.5,15.7,18.1,19.0,16.9];
+const restoMundo = [3.1,1.0,-0.1,-0.2,5.3,0.2,0.4,-2.6,3.1,1.0,-1.5,2.0];
+
+const ctx1 = document.getElementById('chartPIB').getContext('2d');
+new Chart(ctx1, {
+  type: 'bar',
+  data: {
+    labels: pibLabels,
+    datasets: [
+      {
+        label: 'Economia interna (% PIB)',
+        data: econInterna,
+        backgroundColor: '#2E6DA4',
+        borderRadius: 2
+      },
+      {
+        label: 'Resto del mundo (% PIB)',
+        data: restoMundo,
+        backgroundColor: '#E67E22',
+        borderRadius: 2
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { 
+      legend: { position: 'bottom', labels: { font: { size: 10 } } },
+      tooltip: { mode: 'index' }
+    },
+    scales: {
+      x: { stacked: true, ticks: { font: { size: 9 }, maxRotation: 45 }, grid: { display: false } },
+      y: { stacked: true, ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } }
+    }
+  }
+});
+
+// Ahorro bruto en MDP - from XLSX real data (last 12 quarters)
+const mdpLabels = ["2023 1T","2023 2T","2023 3T","2023 4T","2024 1T","2024 2T","2024 3T","2024 4T","2025 1T","2025 2T","2025 3T","2025 4T"];
+const mdpAhorro = [6464871,6225836,6090682,6215412,6218018,6456556,6730007,6595605,6463205,6593281,6594056,6561343];
+
+const ctx2 = document.getElementById('chartMDP').getContext('2d');
+new Chart(ctx2, {
+  type: 'line',
+  data: {
+    labels: mdpLabels,
+    datasets: [{
+      label: 'Ahorro bruto (MDP anualizados)',
+      data: mdpAhorro,
+      borderColor: '#1A3A5C',
+      backgroundColor: 'rgba(26,58,92,0.1)',
+      borderWidth: 2.5,
+      pointRadius: 3,
+      pointHoverRadius: 6,
+      tension: 0.3,
+      fill: true
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 10 } } },
+      tooltip: { callbacks: { label: ctx => '$' + (ctx.parsed.y/1000000).toFixed(2) + ' billones' } }
+    },
+    scales: {
+      y: {
+        ticks: { callback: v => (v/1000000).toFixed(1) + 'B', font: { size: 10 } },
+        grid: { color: 'rgba(0,0,0,0.05)' }
+      },
+      x: { ticks: { font: { size: 9 }, maxRotation: 45 }, grid: { display: false } }
+    }
+  }
+});
+</script>
+
+</body>
+</html>

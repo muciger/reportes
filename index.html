@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal de Indicadores INEGI</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, Helvetica, sans-serif; background: #f0f4f8; color: #333; font-size: 14px; }
+.banner-bar { background: linear-gradient(90deg, #10312B 0%, #235B4E 50%, #10312B 100%); padding: 10px 20px; }
+.banner-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; color: #fff; font-size: 14px; font-weight: 700; letter-spacing: 1px; }
+.header { background: #1A3A5C; color: #fff; padding: 24px 30px; }
+.header h1 { font-size: 24px; letter-spacing: 2px; font-weight: 700; }
+.header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 6px; letter-spacing: 0.5px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+.section-title {
+  font-size: 11px; text-transform: uppercase; color: #2E6DA4;
+  border-bottom: 2px solid #2E6DA4; padding-bottom: 6px; margin: 20px 0 16px;
+  letter-spacing: 1.5px; font-weight: 700;
+}
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
+.card {
+  background: #fff; border-radius: 8px; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none; color: inherit; display: block;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+.card-accent { height: 4px; }
+.card-accent.blue { background: #2E6DA4; }
+.card-accent.green { background: #1E8449; }
+.card-accent.orange { background: #E67E22; }
+.card-accent.purple { background: #8E44AD; }
+.card-body { padding: 18px; }
+.card-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #fff; background: #2E6DA4; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 8px; margin-right: 4px; }
+.card-tag.censo { background: #8E44AD; }
+.card-tag.indicador { background: #2E6DA4; }
+.card-tag.cuentas { background: #E67E22; }
+.card-tag.consolidado { background: #1A3A5C; }
+.card-title { font-size: 16px; font-weight: 700; color: #1A3A5C; margin-bottom: 6px; }
+.card-date { font-size: 11px; color: #999; margin-bottom: 8px; }
+.card-kpi { font-size: 24px; font-weight: 700; margin: 8px 0; }
+.card-kpi.positive { color: #1E8449; }
+.card-kpi.neutral { color: #2E6DA4; }
+.card-desc { font-size: 12px; color: #666; line-height: 1.5; }
+.card-footer { padding: 10px 18px; background: #f8fafc; border-top: 1px solid #eee; font-size: 11px; color: #2E6DA4; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.footer {
+  background: #1A3A5C; color: rgba(255,255,255,0.7); text-align: center;
+  padding: 14px; font-size: 11px; margin-top: 30px;
+}
+.stats-bar { display: flex; gap: 30px; margin-bottom: 20px; padding: 16px 20px; background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.stat-item { text-align: center; }
+.stat-value { font-size: 22px; font-weight: 700; color: #1A3A5C; }
+.stat-label { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+.indicator-pills { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+.pill { font-size: 10px; background: #e8eef4; color: #1A3A5C; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="banner-bar">
+  <div class="banner-inner">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:8px;"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="#fff" opacity="0.3"/><path d="M12 4.5L4 8.5v7L12 19.5l8-4v-7L12 4.5z" fill="#fff" opacity="0.5"/></svg>
+    <span>gob.mx</span>
+    <span style="margin-left:auto;font-size:11px;opacity:0.8;">Secretaria de Economia</span>
+  </div>
+</div>
+
+<div class="header">
+  <h1>PORTAL DE INDICADORES INEGI</h1>
+  <div class="subtitle">Subsecretaria de Industria y Comercio | Direccion de Analisis Economico</div>
+</div>
+
+<div class="container">
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-value">3</div>
+      <div class="stat-label">Reportes diarios</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">20 mar 2026</div>
+      <div class="stat-label">Ultima actualizacion</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">6</div>
+      <div class="stat-label">Indicadores procesados</div>
+    </div>
+  </div>
+
+  <div class="section-title">20 de Marzo de 2026</div>
+  <div class="cards-grid">
+
+    <a class="card" href="reporte_2026-03-20.html">
+      <div class="card-accent blue"></div>
+      <div class="card-body">
+        <span class="card-tag consolidado">Reporte Consolidado</span>
+        <div class="card-title">IOAE + ITAB/ODGT</div>
+        <div class="card-date">20 de marzo de 2026 | 2 indicadores</div>
+        <div class="indicator-pills">
+          <span class="pill">IOAE: +1.2% anual</span>
+          <span class="pill">ODGT: +2.4% trim</span>
+        </div>
+        <div class="card-kpi positive">+1.2%</div>
+        <div class="card-desc">IOAE estima crecimiento IGAE de 1.2% anual para feb 2026. Terciarias +1.9%, secundarias -1.9%. ITAB: Oferta global +2.4% trimestral en Q4 2025, PIB +0.86% trim, ahorro bruto +3.5%.</div>
+      </div>
+      <div class="card-footer">Ver reporte consolidado</div>
+    </a>
+
+  </div>
+
+  <div class="section-title">19 de Marzo de 2026</div>
+  <div class="cards-grid">
+
+    <a class="card" href="CNGMD_2026-03-19.html">
+      <div class="card-accent purple"></div>
+      <div class="card-body">
+        <span class="card-tag censo">Censo</span>
+        <div class="card-title">CNGMD 2025</div>
+        <div class="card-date">19 de marzo de 2026</div>
+        <div class="card-kpi neutral">24.9%</div>
+        <div class="card-desc">Presidentas municipales y alcaldesas en 2024. Aumento de 2 pp respecto a 2022. 516 municipios sin institucion de seguridad publica.</div>
+      </div>
+      <div class="card-footer">Ver reporte completo</div>
+    </a>
+
+    <a class="card" href="IOCP_2026-03-19.html">
+      <div class="card-accent green"></div>
+      <div class="card-body">
+        <span class="card-tag indicador">Indicador</span>
+        <div class="card-title">IOCP - Consumo Privado</div>
+        <div class="card-date">19 de marzo de 2026</div>
+        <div class="card-kpi positive">+4.7%</div>
+        <div class="card-desc">Estimacion oportuna del consumo privado para enero 2026 (var. anual). Anticipa +3.5% para febrero. Recuperacion tras contraccion.</div>
+      </div>
+      <div class="card-footer">Ver reporte completo</div>
+    </a>
+
+  </div>
+
+</div>
+
+<div class="footer">
+  Subsecretaria de Industria y Comercio | Portal de Indicadores Economicos | Actualizado automaticamente
+</div>
+
+</body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitor CNGMD - 19 marzo 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, Helvetica, sans-serif; background: #f0f4f8; color: #333; font-size: 14px; }
+.banner-bar { background: linear-gradient(90deg, #10312B 0%, #235B4E 50%, #10312B 100%); padding: 10px 20px; }
+.banner-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; color: #fff; font-size: 14px; font-weight: 700; letter-spacing: 1px; }
+.header { background: #1A3A5C; color: #fff; padding: 18px 30px; }
+.header h1 { font-size: 22px; letter-spacing: 2px; font-weight: 700; }
+.header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 4px; letter-spacing: 0.5px; }
+.header .date { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.section-title {
+  font-size: 11px; text-transform: uppercase; color: #2E6DA4;
+  border-bottom: 2px solid #2E6DA4; padding-bottom: 6px; margin: 25px 0 15px;
+  letter-spacing: 1.5px; font-weight: 700;
+}
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.kpi-card {
+  background: #fff; border-radius: 6px; padding: 16px 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-top: 3px solid #2E6DA4;
+}
+.kpi-card.green { border-top-color: #1E8449; }
+.kpi-card.red { border-top-color: #C0392B; }
+.kpi-card.blue { border-top-color: #2E6DA4; }
+.kpi-card.orange { border-top-color: #E67E22; }
+.kpi-card.purple { border-top-color: #8E44AD; }
+.kpi-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+.kpi-value { font-size: 28px; font-weight: 700; margin: 6px 0 2px; }
+.kpi-value.positive { color: #1E8449; }
+.kpi-value.negative { color: #C0392B; }
+.kpi-value.neutral { color: #2E6DA4; }
+.kpi-detail { font-size: 11px; color: #888; }
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+.chart-box {
+  background: #fff; border-radius: 6px; padding: 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.chart-box canvas { width: 100% !important; height: auto !important; max-height: 280px; }
+.chart-box.full { grid-column: 1 / -1; }
+.chart-title { font-size: 13px; font-weight: 700; color: #1A3A5C; margin-bottom: 2px; }
+.chart-subtitle { font-size: 11px; color: #888; margin-bottom: 12px; }
+.chart-source { font-size: 10px; color: #aaa; margin-top: 8px; text-align: right; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+.content-box {
+  background: #fff; border-radius: 6px; padding: 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); line-height: 1.6;
+}
+.content-box h3 { font-size: 13px; color: #1A3A5C; margin-bottom: 10px; font-weight: 700; }
+.content-box p { font-size: 13px; margin-bottom: 8px; }
+.highlight-box {
+  background: linear-gradient(135deg, #1A3A5C 0%, #2E6DA4 100%);
+  color: #fff; border-radius: 6px; padding: 20px; margin-bottom: 20px;
+  text-align: center;
+}
+.highlight-box .big { font-size: 36px; font-weight: 700; }
+.highlight-box .label { font-size: 13px; opacity: 0.9; margin-top: 4px; }
+.highlight-box .note { font-size: 11px; opacity: 0.7; font-style: italic; margin-top: 8px; }
+details { background: #fff; border-radius: 6px; padding: 14px 18px; margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+details summary { cursor: pointer; font-size: 12px; font-weight: 700; color: #2E6DA4; text-transform: uppercase; letter-spacing: 1px; }
+details p { font-size: 12px; color: #666; margin-top: 10px; line-height: 1.6; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+.data-table th { background: #1A3A5C; color: #fff; padding: 8px 10px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.data-table td { padding: 7px 10px; border-bottom: 1px solid #eee; }
+.data-table tr:hover { background: #f7fafc; }
+.data-table .pct-bar { display: inline-block; height: 14px; background: #2E6DA4; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+.btn-comunicado {
+  display: inline-block; background: #1A3A5C; color: #fff; padding: 10px 24px;
+  border-radius: 4px; text-decoration: none; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;
+}
+.btn-comunicado:hover { background: #2E6DA4; }
+.footer {
+  background: #1A3A5C; color: rgba(255,255,255,0.7); text-align: center;
+  padding: 14px; font-size: 11px; margin-top: 20px;
+}
+.interval-tag { font-size: 10px; color: #999; display: block; margin-top: 2px; }
+@media (max-width: 768px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .charts-grid, .two-col { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="banner-bar">
+  <div class="banner-inner">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:8px;"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="#fff" opacity="0.3"/><path d="M12 4.5L4 8.5v7L12 19.5l8-4v-7L12 4.5z" fill="#fff" opacity="0.5"/></svg>
+    <span>gob.mx</span>
+    <span style="margin-left:auto;font-size:11px;opacity:0.8;">Secretaria de Economia</span>
+  </div>
+</div>
+
+<div class="header">
+  <h1>MONITOR CNGMD 2025</h1>
+  <div class="subtitle">Censo Nacional de Gobiernos Municipales y Demarcaciones Territoriales de la CDMX</div>
+  <div class="date">19 de marzo de 2026 | Fuente: INEGI, Tabulados CNGMD 2025</div>
+</div>
+
+<div class="container">
+
+  <div class="section-title">Indicadores Clave</div>
+  <div class="kpi-grid">
+    <div class="kpi-card green">
+      <div class="kpi-label">Presidentas Municipales</div>
+      <div class="kpi-value positive">24.9%</div>
+      <div class="kpi-detail">605 de 2,434 cargos en 2024</div>
+      <span class="interval-tag">+2 pp vs 2022 (22.9%)</span>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Total Integrantes</div>
+      <div class="kpi-value neutral">22,137</div>
+      <div class="kpi-detail">Personas en Ayuntamientos y Alcaldias</div>
+      <span class="interval-tag">Municipios + CDMX</span>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">Recaudacion Predial</div>
+      <div class="kpi-value" style="color:#E67E22;">52.5%</div>
+      <div class="kpi-detail">Promedio nacional vs programado</div>
+      <span class="interval-tag">2,047 admin. con pago predial</span>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Sin Seguridad Publica</div>
+      <div class="kpi-value negative">516</div>
+      <div class="kpi-detail">Municipios sin institucion propia</div>
+      <span class="interval-tag">493 con otra inst. o comunales</span>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <div class="big">24.9%</div>
+    <div class="label">Proporcion de presidentas municipales y alcaldesas en 2024</div>
+    <div class="note">El aumento respecto a 2022 fue de dos puntos porcentuales (de 22.9% a 24.9%)</div>
+  </div>
+
+  <div class="section-title">Participacion de Mujeres por Entidad Federativa</div>
+  <div class="charts-grid">
+    <div class="chart-box full">
+      <div class="chart-title">Porcentaje de Presidentas Municipales y Alcaldesas por Entidad, 2024</div>
+      <div class="chart-subtitle">Datos del tabulado CNGMD 2025. Linea roja: promedio nacional (24.9%)</div>
+      <canvas id="chartEstados" height="400"></canvas>
+      <div class="chart-source">Fuente: INEGI, CNGMD 2025, Tabulado 1. Personas integrantes del Ayuntamiento o Alcaldia segun sexo.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Composicion por Sexo: Nivel Nacional</div>
+  <div class="charts-grid">
+    <div class="chart-box">
+      <div class="chart-title">Distribucion de Presidencias Municipales por Sexo</div>
+      <div class="chart-subtitle">Total: 2,434 personas. Datos 2024.</div>
+      <canvas id="chartPie" height="260"></canvas>
+      <div class="chart-source">Fuente: INEGI, CNGMD 2025, Tabulado 1.</div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Evolucion Historica: Presidentas Municipales (%)</div>
+      <div class="chart-subtitle">Serie censal CNGMD (ediciones 2011 a 2025)</div>
+      <canvas id="chartHistorico" height="260"></canvas>
+      <div class="chart-source">Fuente: INEGI, CNGMD ediciones 2011-2025. Comunicado de prensa.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Servicios Publicos Municipales</div>
+  <div class="charts-grid">
+    <div class="chart-box">
+      <div class="chart-title">Cobertura de Servicios Municipales Clave</div>
+      <div class="chart-subtitle">Porcentaje de municipios que proveen el servicio, 2024</div>
+      <canvas id="chartServicios" height="260"></canvas>
+      <div class="chart-source">Fuente: INEGI, CNGMD 2025, Comunicado de prensa.</div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Residuos Solidos Urbanos</div>
+      <div class="chart-subtitle">Recoleccion diaria promedio nacional (kg)</div>
+      <canvas id="chartResiduos" height="260"></canvas>
+      <div class="chart-source">Fuente: INEGI, CNGMD 2025, Comunicado de prensa.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Ranking Estatal: Top 10 y Bottom 10</div>
+  <div class="two-col">
+    <div class="content-box">
+      <h3>Mayor % de Presidentas Municipales</h3>
+      <table class="data-table">
+        <thead><tr><th>Entidad</th><th>Mujeres</th><th>Total</th><th>%</th></tr></thead>
+        <tbody>
+          <tr><td>Baja California Sur</td><td>3</td><td>5</td><td><span class="pct-bar" style="width:60px;"></span>60.0%</td></tr>
+          <tr><td>Baja California</td><td>4</td><td>7</td><td><span class="pct-bar" style="width:57px;"></span>57.1%</td></tr>
+          <tr><td>Quintana Roo</td><td>6</td><td>11</td><td><span class="pct-bar" style="width:55px;"></span>54.5%</td></tr>
+          <tr><td>Tamaulipas</td><td>23</td><td>43</td><td><span class="pct-bar" style="width:54px;"></span>53.5%</td></tr>
+          <tr><td>Hidalgo</td><td>41</td><td>84</td><td><span class="pct-bar" style="width:49px;"></span>48.8%</td></tr>
+          <tr><td>Durango</td><td>17</td><td>39</td><td><span class="pct-bar" style="width:44px;"></span>43.6%</td></tr>
+          <tr><td>Colima</td><td>4</td><td>10</td><td><span class="pct-bar" style="width:40px;"></span>40.0%</td></tr>
+          <tr><td>Campeche</td><td>5</td><td>13</td><td><span class="pct-bar" style="width:39px;"></span>38.5%</td></tr>
+          <tr><td>Jalisco</td><td>46</td><td>124</td><td><span class="pct-bar" style="width:37px;"></span>37.1%</td></tr>
+          <tr><td>Aguascalientes</td><td>4</td><td>11</td><td><span class="pct-bar" style="width:36px;"></span>36.4%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content-box">
+      <h3>Menor % de Presidentas Municipales</h3>
+      <table class="data-table">
+        <thead><tr><th>Entidad</th><th>Mujeres</th><th>Total</th><th>%</th></tr></thead>
+        <tbody>
+          <tr><td>Oaxaca</td><td>63</td><td>537</td><td><span class="pct-bar" style="width:12px; background:#C0392B;"></span>11.7%</td></tr>
+          <tr><td>Morelos</td><td>4</td><td>36</td><td><span class="pct-bar" style="width:11px; background:#C0392B;"></span>11.1%</td></tr>
+          <tr><td>Sonora</td><td>8</td><td>72</td><td><span class="pct-bar" style="width:11px; background:#C0392B;"></span>11.1%</td></tr>
+          <tr><td>Guerrero</td><td>9</td><td>81</td><td><span class="pct-bar" style="width:11px; background:#C0392B;"></span>11.1%</td></tr>
+          <tr><td>Chihuahua</td><td>8</td><td>67</td><td><span class="pct-bar" style="width:12px; background:#C0392B;"></span>11.9%</td></tr>
+          <tr><td>Yucatan</td><td>13</td><td>106</td><td><span class="pct-bar" style="width:12px; background:#C0392B;"></span>12.3%</td></tr>
+          <tr><td>Chiapas</td><td>17</td><td>124</td><td><span class="pct-bar" style="width:14px; background:#C0392B;"></span>13.7%</td></tr>
+          <tr><td>Puebla</td><td>32</td><td>217</td><td><span class="pct-bar" style="width:15px; background:#C0392B;"></span>14.7%</td></tr>
+          <tr><td>Veracruz de Ignacio de la Llave</td><td>32</td><td>212</td><td><span class="pct-bar" style="width:15px; background:#C0392B;"></span>15.1%</td></tr>
+          <tr><td>Nuevo Leon</td><td>8</td><td>51</td><td><span class="pct-bar" style="width:16px; background:#C0392B;"></span>15.7%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title">Analisis</div>
+  <div class="two-col">
+    <div class="content-box">
+      <h3>Contexto Institucional</h3>
+      <p>El CNGMD 2025 es el noveno censo bienal que realiza el INEGI sobre la gestion de gobiernos municipales. Cubre 2,434 municipios y alcaldias en temas de gobierno, seguridad publica, proteccion civil, justicia civica, agua potable y residuos solidos.</p>
+      <p>La participacion femenina en presidencias municipales alcanzo 24.9% en 2024, con 605 mujeres frente a 1,821 hombres. El aumento de 2 puntos porcentuales respecto a 2022 refleja un avance gradual, aunque la brecha sigue amplia.</p>
+      <p>Cuatro entidades superan el 50% de representacion femenina en presidencias: Baja California Sur (60%), Baja California (57.1%), Quintana Roo (54.5%) y Tamaulipas (53.5%). En contraste, Oaxaca (11.7%), Morelos y Sonora (11.1%) registran los menores porcentajes.</p>
+    </div>
+    <div class="content-box">
+      <h3>Hallazgos en Servicios Publicos</h3>
+      <p>La recaudacion del impuesto predial promedia 52.5% de lo programado a nivel nacional. Existen 2,047 administraciones publicas con tramite de pago predial habilitado.</p>
+      <p>En seguridad publica, 516 municipios carecen de institucion propia. En 493 de ellos, otras instituciones o cuerpos comunales cubren la funcion. Los 23 municipios restantes no cuentan con ningun esquema.</p>
+      <p>El 81% de los municipios (2,006) provee servicio de drenaje y alcantarillado. Los 455 municipios restantes carecen de red de desalojo de aguas servidas.</p>
+      <p>En residuos solidos, se recolectan 114.3 millones de kg diarios a nivel nacional. Solo el 15.4% de la recoleccion incorpora separacion de organicos e inorganicos.</p>
+    </div>
+  </div>
+
+  <details>
+    <summary>Nota Metodologica</summary>
+    <p>El Censo Nacional de Gobiernos Municipales y Demarcaciones Territoriales de la Ciudad de Mexico (CNGMD) 2025 genera informacion estadistica y geografica sobre la integracion y funcionamiento de los ayuntamientos y alcaldias. Abarca las funciones de gobierno, seguridad publica, proteccion civil, justicia civica, agua potable y saneamiento, y residuos solidos urbanos.</p>
+    <p>El periodo de levantamiento fue del 9 de junio al 17 de octubre de 2025. La cobertura temporal abarca datos de 2023, 2024 y 2025 segun el tipo de pregunta. El desglose geografico es por municipio y demarcacion territorial.</p>
+    <p>Los datos de este reporte provienen del Tabulado 1 (Personas integrantes del Ayuntamiento o Alcaldia segun sexo, 2024), descargado directamente de los tabulados oficiales del INEGI publicados el 19 de marzo de 2026.</p>
+  </details>
+
+  <a class="btn-comunicado" href="https://www.inegi.org.mx/contenidos/saladeprensa/boletines/2026/cngmd/CNGMD_25.pdf" target="_blank">VER COMUNICADO COMPLETO</a>
+
+</div>
+
+<div class="footer">
+  OSFPLAN Mexico | Monitor de Indicadores INEGI | Generado automaticamente el 19 de marzo de 2026
+</div>
+
+<script>
+// ===== CHART 1: Bar chart by state =====
+const stateData = [
+  {e:"Baja California Sur",p:60.0},{e:"Baja California",p:57.1},{e:"Quintana Roo",p:54.5},
+  {e:"Tamaulipas",p:53.5},{e:"Hidalgo",p:48.8},{e:"Durango",p:43.6},{e:"Colima",p:40.0},
+  {e:"Campeche",p:38.5},{e:"Jalisco",p:37.1},{e:"Aguascalientes",p:36.4},
+  {e:"CDMX",p:36.4},{e:"Nayarit",p:35.0},{e:"Sinaloa",p:35.0},
+  {e:"Mexico",p:34.7},{e:"Michoacan",p:31.0},{e:"Tlaxcala",p:30.5},
+  {e:"Tabasco",p:29.4},{e:"Coahuila",p:28.9},{e:"Guanajuato",p:28.3},
+  {e:"San Luis Potosi",p:27.6},{e:"Zacatecas",p:27.6},{e:"Queretaro",p:27.8},
+  {e:"Nuevo Leon",p:15.7},{e:"Veracruz",p:15.1},{e:"Puebla",p:14.7},
+  {e:"Chiapas",p:13.7},{e:"Yucatan",p:12.3},{e:"Chihuahua",p:11.9},
+  {e:"Oaxaca",p:11.7},{e:"Guerrero",p:11.1},{e:"Sonora",p:11.1},{e:"Morelos",p:11.1}
+];
+const stLabels = stateData.map(d => d.e);
+const stValues = stateData.map(d => d.p);
+const stColors = stValues.map(v => v >= 24.9 ? '#2E6DA4' : '#C0392B');
+
+const ctx1 = document.getElementById('chartEstados').getContext('2d');
+new Chart(ctx1, {
+  type: 'bar',
+  data: {
+    labels: stLabels,
+    datasets: [{
+      label: '% Presidentas municipales',
+      data: stValues,
+      backgroundColor: stColors,
+      borderRadius: 3,
+      barPercentage: 0.75
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } },
+      annotation: undefined
+    },
+    scales: {
+      x: {
+        ticks: { callback: v => v + '%', font: { size: 10 } },
+        grid: { color: 'rgba(0,0,0,0.05)' },
+        max: 70
+      },
+      y: { ticks: { font: { size: 10 } }, grid: { display: false } }
+    }
+  },
+  plugins: [{
+    id: 'avgLine',
+    afterDraw(chart) {
+      const xScale = chart.scales.x;
+      const x = xScale.getPixelForValue(24.9);
+      const ctx = chart.ctx;
+      ctx.save();
+      ctx.beginPath();
+      ctx.setLineDash([6, 4]);
+      ctx.strokeStyle = '#C0392B';
+      ctx.lineWidth = 2;
+      ctx.moveTo(x, chart.chartArea.top);
+      ctx.lineTo(x, chart.chartArea.bottom);
+      ctx.stroke();
+      ctx.fillStyle = '#C0392B';
+      ctx.font = '10px Arial';
+      ctx.fillText('Promedio: 24.9%', x + 4, chart.chartArea.top + 12);
+      ctx.restore();
+    }
+  }]
+});
+
+// ===== CHART 2: Pie chart =====
+const ctx2 = document.getElementById('chartPie').getContext('2d');
+new Chart(ctx2, {
+  type: 'doughnut',
+  data: {
+    labels: ['Hombres (1,821)', 'Mujeres (605)', 'No identificado (8)'],
+    datasets: [{
+      data: [1821, 605, 8],
+      backgroundColor: ['#2E6DA4', '#E67E22', '#95a5a6'],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } },
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+            const pct = ((ctx.parsed / total) * 100).toFixed(1);
+            return `${ctx.label}: ${ctx.parsed} (${pct}%)`;
+          }
+        }
+      }
+    }
+  }
+});
+
+// ===== CHART 3: Historical trend =====
+// Historical data from CNGMD census editions
+const histLabels = ['2010','2012','2014','2016','2018','2020','2022','2024'];
+const histData = [6.8, 7.0, 9.3, 14.0, 16.0, 21.6, 22.9, 24.9];
+
+const ctx3 = document.getElementById('chartHistorico').getContext('2d');
+new Chart(ctx3, {
+  type: 'line',
+  data: {
+    labels: histLabels,
+    datasets: [{
+      label: '% Presidentas municipales',
+      data: histData,
+      borderColor: '#2E6DA4',
+      backgroundColor: 'rgba(46,109,164,0.1)',
+      borderWidth: 2.5,
+      pointRadius: 5,
+      pointHoverRadius: 7,
+      pointBackgroundColor: '#2E6DA4',
+      tension: 0.3,
+      fill: true
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + '%' } }
+    },
+    scales: {
+      y: {
+        ticks: { callback: v => v + '%', font: { size: 10 } },
+        grid: { color: 'rgba(0,0,0,0.05)' },
+        min: 0, max: 30
+      },
+      x: { ticks: { font: { size: 10 } }, grid: { display: false } }
+    }
+  }
+});
+
+// ===== CHART 4: Services coverage =====
+const ctx4 = document.getElementById('chartServicios').getContext('2d');
+new Chart(ctx4, {
+  type: 'bar',
+  data: {
+    labels: ['Drenaje y\nalcantarillado', 'Pago predial\nhabilitado', 'Con inst. de\nseg. publica', 'Separacion\nde residuos'],
+    datasets: [{
+      label: '% de municipios',
+      data: [81.0, 84.1, 78.8, 15.4],
+      backgroundColor: ['#2E6DA4', '#1E8449', '#E67E22', '#C0392B'],
+      borderRadius: 4,
+      barPercentage: 0.65
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + '%' } }
+    },
+    scales: {
+      y: {
+        ticks: { callback: v => v + '%', font: { size: 10 } },
+        grid: { color: 'rgba(0,0,0,0.05)' },
+        max: 100
+      },
+      x: { ticks: { font: { size: 9 } }, grid: { display: false } }
+    }
+  }
+});
+
+// ===== CHART 5: Residuos =====
+const ctx5 = document.getElementById('chartResiduos').getContext('2d');
+new Chart(ctx5, {
+  type: 'doughnut',
+  data: {
+    labels: ['Sin separacion (84.6%)', 'Con separacion org/inorg (15.4%)'],
+    datasets: [{
+      data: [84.6, 15.4],
+      backgroundColor: ['#95a5a6', '#1E8449'],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } },
+      tooltip: { callbacks: { label: ctx => ctx.parsed.toFixed(1) + '% de recoleccion diaria' } }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
