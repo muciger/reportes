@@ -121,7 +121,7 @@ details p { font-size: 12px; color: #666; margin-top: 10px; line-height: 1.6; }
 <!-- Header -->
 <div class="header">
 <div class="header-inner">
-<h1>REPORTE DIARIO INEGI <span class="badge">4 indicadores</span></h1>
+<h1>REPORTE DIARIO INEGI <span class="badge">5 indicadores</span></h1>
 <div class="subtitle">Subsecretaria de Industria y Comercio</div>
 <div class="date">23 de marzo de 2026 | Datos de enero de 2026</div>
 </div>
@@ -141,6 +141,7 @@ details p { font-size: 12px; color: #666; margin-top: 10px; line-height: 1.6; }
 <button class="tab" role="tab" aria-selected="false" aria-controls="sec-ems" onclick="switchTab('ems')">EMS</button>
 <button class="tab" role="tab" aria-selected="false" aria-controls="sec-eimm" onclick="switchTab('eimm')">EIMM</button>
 <button class="tab" role="tab" aria-selected="false" aria-controls="sec-immex" onclick="switchTab('immex')">IMMEX</button>
+<button class="tab" role="tab" aria-selected="false" aria-controls="sec-imoam" onclick="switchTab('imoam')">IMOAM</button>
 </div>
 <div class="tab-hint">Navega entre indicadores con las flechas izquierda/derecha del teclado</div>
 
@@ -229,7 +230,7 @@ details p { font-size: 12px; color: #666; margin-top: 10px; line-height: 1.6; }
 </div>
 <div class="content-box">
 <h3>Contexto de mercado</h3>
-<p>BBVA Mexico reviso al alza su pronostico de crecimiento para 2026 a 1.8%, impulsado por consumo privado y un efecto favorable del Mundial de Futbol sobre el turismo (BBVA Research, Situacion Mexico, febrero 2026).</p>
+<p>ANTAD: ventas mismas tiendas +2.0% en enero 2026, totales +5.3%. Autoservicios lideran con +2.9% (Fuente: ANTAD, comunicado febrero 2026). Confianza del consumidor: 44.0 puntos enero 2026, acumula 13 meses de caída, -2.7 pts anual (Fuente: INEGI, ENCO, febrero 2026). Inflación: 4.02% anual febrero 2026, arriba de meta Banxico 3% (Fuente: INEGI, INPC, marzo 2026). PIB 2026: BBVA estima 1.8%, Banxico 1.6% (Fuente: BBVA Research, Situación México, marzo 2026).</p>
 <p>La inflacion general se ubico en 3.79% anual en enero 2026, con presion en servicios educativos (6.02% anual). Banxico mantuvo la tasa de referencia en 9.50% tras recortar 25 pb en diciembre 2025, y el mercado anticipa una pausa prolongada en el primer trimestre (Encuesta Banxico, febrero 2026).</p>
 <p>El tipo de cambio se ha mantenido por debajo de 20 pesos por dolar desde el segundo trimestre de 2025, lo que apoya el poder adquisitivo del consumidor y abarata importaciones para el comercio al por mayor.</p>
 </div>
@@ -543,13 +544,74 @@ details p { font-size: 12px; color: #666; margin-top: 10px; line-height: 1.6; }
 </div><!-- container -->
 
 <!-- Footer -->
+
+<!-- ======== IMOAM ======== -->
+<div id="sec-imoam" class="section">
+
+<div class="highlight-box" style="border-left:4px solid #C0392B; padding:1.2rem 1.5rem; margin:1.5rem; background:#fdf2f2;">
+<span style="font-size:2.2rem; font-weight:700; color:#C0392B;">-4.6%</span>
+<span style="display:block; color:#5a5a5a; font-size:0.9rem; margin-top:0.3rem;">Variaci&oacute;n anual estimada de la actividad manufacturera, febrero 2026*</span>
+</div>
+
+<div class="kpi-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; margin:0 1.5rem 1.5rem;">
+<div class="kpi-card" style="border-top:3px solid #C0392B; padding:1rem; background:#fafafa; border-radius:4px;">
+<div style="font-size:0.75rem; color:#5a5a5a; text-transform:uppercase;">Valor IMOAM</div>
+<div style="font-size:1.5rem; font-weight:700; color:#C0392B;">99.3</div>
+<div style="font-size:0.7rem; color:#666;">puntos (feb 2026)</div>
+</div>
+<div class="kpi-card" style="border-top:3px solid #C0392B; padding:1rem; background:#fafafa; border-radius:4px;">
+<div style="font-size:0.75rem; color:#5a5a5a; text-transform:uppercase;">Var. Anual Estimada</div>
+<div style="font-size:1.5rem; font-weight:700; color:#C0392B;">-4.6%</div>
+<div style="font-size:0.7rem; color:#666;">feb 2026 vs feb 2025</div>
+</div>
+<div class="kpi-card" style="border-top:3px solid #2E6DA4; padding:1rem; background:#fafafa; border-radius:4px;">
+<div style="font-size:0.75rem; color:#5a5a5a; text-transform:uppercase;">IMEF Manufacturero</div>
+<div style="font-size:1.5rem; font-weight:700; color:#C0392B;">47.2</div>
+<div style="font-size:0.7rem; color:#666;">feb 2026 (23 meses &lt;50)</div>
+</div>
+<div class="kpi-card" style="border-top:3px solid #2E6DA4; padding:1rem; background:#fafafa; border-radius:4px;">
+<div style="font-size:0.75rem; color:#5a5a5a; text-transform:uppercase;">Tipo</div>
+<div style="font-size:1.5rem; font-weight:700; color:#E67E22;">Nowcasting*</div>
+<div style="font-size:0.7rem; color:#666;">estimaci&oacute;n anticipada</div>
+</div>
+</div>
+
+<div style="margin:0 1.5rem 1rem; padding:0.8rem 1rem; background:#fff8e1; border:1px solid #ffe082; border-radius:4px; font-size:0.85rem; color:#5a5a5a;">
+* <strong>Nowcasting:</strong> El IMOAM es un c&aacute;lculo anticipado del Indicador Mensual de la Actividad Industrial (IMAI) del sector manufacturero. No es dato oficial definitivo. Los intervalos de confianza se publican en el bolet&iacute;n de indicador.
+</div>
+
+<div class="three-col" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:18px; margin:0 1.5rem 1.5rem;">
+<div class="content-box" style="background:#fafafa; padding:1rem; border-radius:4px;">
+<h3 style="color:#2E6DA4; text-transform:uppercase; font-size:0.85rem; border-bottom:2px solid #2E6DA4; padding-bottom:0.3rem; margin-bottom:0.6rem;">An&aacute;lisis</h3>
+<p style="font-size:0.85rem; color:#333; line-height:1.5;">El IMOAM estima un valor de 99.3 puntos para febrero 2026, lo que implica una ca&iacute;da anual de 4.6% en la actividad manufacturera. Esta contracci&oacute;n es consistente con el IMEF manufacturero, que en febrero registr&oacute; 47.2 puntos y acumula 23 meses consecutivos en zona de contracci&oacute;n (por debajo de 50). La manufactura perdi&oacute; 127,200 empleos formales en 2025 seg&uacute;n el IMSS, la segunda mayor ca&iacute;da en 20 a&ntilde;os.</p>
+</div>
+<div class="content-box" style="background:#fafafa; padding:1rem; border-radius:4px;">
+<h3 style="color:#2E6DA4; text-transform:uppercase; font-size:0.85rem; border-bottom:2px solid #2E6DA4; padding-bottom:0.3rem; margin-bottom:0.6rem;">Lectura estrat&eacute;gica</h3>
+<p style="font-size:0.85rem; color:#333; line-height:1.5;">Sin &aacute;ngulo positivo identificable. El IMOAM estima una contracci&oacute;n anual de 4.6% para la manufactura en febrero 2026, consistente con 23 meses de contracci&oacute;n del IMEF manufacturero (47.2 puntos). Las exportaciones automotrices cayeron 9.03% anual en enero, el peor inicio de a&ntilde;o desde 2022.</p>
+</div>
+<div class="content-box" style="background:#fafafa; padding:1rem; border-radius:4px;">
+<h3 style="color:#2E6DA4; text-transform:uppercase; font-size:0.85rem; border-bottom:2px solid #2E6DA4; padding-bottom:0.3rem; margin-bottom:0.6rem;">Contexto de mercado</h3>
+<p style="font-size:0.85rem; color:#333; line-height:1.5;">IMEF manufacturero: 47.2 puntos febrero 2026, +0.5 vs enero pero 23 meses en contracci&oacute;n (Fuente: IMEF, marzo 2026). Exportaciones manufactureras: +9.4% anual enero 2026, pero automotrices -9.03% por aranceles (Fuente: INEGI, BCMM, febrero 2026). PIB 2026: BBVA estima 1.8%, Banxico 1.6% (Fuente: BBVA Research, Situaci&oacute;n M&eacute;xico, marzo 2026).</p>
+</div>
+</div>
+
+<div style="margin:0 1.5rem 1rem; text-align:center;">
+<a href="https://www.inegi.org.mx/app/saladeprensa/noticia/10738" target="_blank" style="display:inline-block; padding:0.6rem 1.5rem; background:#1A3A5C; color:white; text-decoration:none; border-radius:4px; font-size:0.85rem;">Ver comunicado INEGI</a>
+</div>
+
+<details style="margin:0 1.5rem 1.5rem; font-size:0.8rem; color:#5a5a5a;">
+<summary style="cursor:pointer; font-weight:600;">Nota metodol&oacute;gica</summary>
+<p style="margin-top:0.5rem; line-height:1.5;">El IMOAM es un c&aacute;lculo anticipado (nowcasting) del Indicador Mensual de la Actividad Industrial (IMAI) para el sector manufacturero. Se genera con informaci&oacute;n parcial del mes de referencia y modelos econom&eacute;tricos. El dato definitivo se publica aproximadamente 45 d&iacute;as despu&eacute;s del mes de referencia. Los intervalos de confianza del IMOAM de febrero 2026 se encuentran disponibles en el bolet&iacute;n de indicador publicado por INEGI.</p>
+</details>
+
+</div>
 <div class="footer">
 Subsecretaria de Industria y Comercio | Reporte generado automaticamente el 23 de marzo de 2026 | Fuente: INEGI
 </div>
 
 <script>
 // Tab navigation
-const tabs = ['emec','ems','eimm','immex'];
+const tabs = ['emec','ems','eimm','immex','imoam'];
 function switchTab(id) {
   tabs.forEach(t => {
     document.getElementById('sec-'+t).classList.remove('active');
