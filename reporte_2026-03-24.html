@@ -3,59 +3,69 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portal de Indicadores INEGI</title>
+<title>Indicadores Económicos INEGI - 24 de marzo de 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f7f6f4; color: #161a1d; font-size: 14px; }
-.header-banner { width: 100%; background: #fff; border-bottom: 3px solid #9b2247; }
-.header-banner img { width: 100%; max-width: 1100px; display: block; margin: 0 auto; }
-.header { background: #161a1d; color: #fff; padding: 24px 30px; text-align: center; }
-.header h1 { font-size: 22px; letter-spacing: 2px; font-weight: 700; color: #e6d194; }
-.header .subtitle { font-size: 13px; color: #98989A; margin-top: 6px; letter-spacing: 0.5px; }
-.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
-.section-title {
-  font-size: 11px; text-transform: uppercase; color: #9b2247;
-  border-bottom: 2px solid #9b2247; padding-bottom: 6px; margin: 20px 0 16px;
-  letter-spacing: 1.5px; font-weight: 700;
-}
-.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
-.card {
-  background: #fff; border-radius: 8px; overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s;
-  text-decoration: none; color: inherit; display: block;
-}
-.card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
-.card-accent { height: 4px; }
-.card-accent.guinda { background: #9b2247; }
-.card-accent.verde { background: #1e5b4f; }
-.card-accent.dorado { background: #a57f2c; }
-.card-body { padding: 18px; }
-.card-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 8px; margin-right: 4px; }
-.card-tag.consolidado { background: #611232; }
-.card-tag.indicador { background: #1e5b4f; }
-.card-tag.censo { background: #a57f2c; }
-.card-title { font-size: 15px; font-weight: 700; color: #161a1d; margin-bottom: 6px; }
-.card-date { font-size: 11px; color: #98989A; margin-bottom: 8px; }
-.card-kpi { font-size: 24px; font-weight: 700; margin: 8px 0; }
-.card-kpi.positive { color: #1e5b4f; }
-.card-kpi.neutral { color: #a57f2c; }
-.card-desc { font-size: 12px; color: #555; line-height: 1.5; }
-.card-footer { padding: 10px 18px; background: #fafaf8; border-top: 1px solid #eee; font-size: 11px; color: #9b2247; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-.indicator-pills { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
-.pill { font-size: 10px; background: #f0ece4; color: #611232; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
-.stats-bar { display: flex; gap: 30px; margin-bottom: 20px; padding: 16px 20px; background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.stat-item { text-align: center; }
-.stat-value { font-size: 22px; font-weight: 700; color: #611232; }
-.stat-label { font-size: 10px; color: #98989A; text-transform: uppercase; letter-spacing: 0.5px; }
-.footer-banner { width: 100%; background: #fff; border-top: 3px solid #9b2247; margin-top: 30px; }
-.footer-banner img { width: 100%; max-width: 1100px; display: block; margin: 0 auto; }
-.footer-text { background: #161a1d; color: #98989A; text-align: center; padding: 14px; font-size: 11px; }
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:"Segoe UI",system-ui,sans-serif; background:#f7f6f4; color:#161a1d; line-height:1.6; }
+.header-banner { width:100%; background:#fff; border-bottom:3px solid #9b2247; }
+.header-banner img { width:100%; max-width:1200px; display:block; margin:0 auto; }
+.report-title { background:#161a1d; color:#fff; padding:14px 24px; text-align:center; }
+.report-title h1 { font-size:1.15rem; font-weight:600; letter-spacing:.5px; color:#e6d194; }
+.report-title .date { font-size:.85rem; color:#98989A; margin-top:2px; }
+.container { max-width:1200px; margin:0 auto; padding:20px; }
+.executive-summary { background:#fff; border-left:4px solid #9b2247; padding:18px 22px; margin-bottom:24px; border-radius:0 8px 8px 0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.executive-summary h2 { font-size:.95rem; color:#611232; text-transform:uppercase; margin-bottom:10px; letter-spacing:.5px; }
+.executive-summary p { font-size:.93rem; color:#333; }
+.tabs { display:flex; flex-wrap:wrap; gap:4px; background:#e6d194; padding:6px 6px 0; border-radius:8px 8px 0 0; }
+.tab-btn { padding:10px 14px; border:none; background:transparent; cursor:pointer; font-size:.82rem; font-weight:500; color:#611232; border-radius:6px 6px 0 0; transition:all .2s; }
+.tab-btn:hover { background:rgba(255,255,255,.6); }
+.tab-btn.active { background:#fff; color:#9b2247; font-weight:700; }
+.tab-hint { font-size:.72rem; color:#98989A; padding:4px 12px; background:#f0ece4; }
+.tab-content { display:none; background:#fff; padding:24px; border-radius:0 0 8px 8px; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.tab-content.active { display:block; }
+.highlight-box { background:linear-gradient(135deg,#1e5b4f,#002f2a); color:#fff; padding:20px 24px; border-radius:8px; margin-bottom:20px; }
+.highlight-box .dato { font-size:1.8rem; font-weight:700; }
+.highlight-box .desc { font-size:.88rem; opacity:.9; margin-top:4px; }
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+.kpi { background:#fafaf8; border-radius:8px; padding:14px 16px; border-top:3px solid #98989A; }
+.kpi.green { border-top-color:#1e5b4f; } .kpi.red { border-top-color:#9b2247; }
+.kpi .label { font-size:.73rem; color:#5a5a5a; text-transform:uppercase; letter-spacing:.3px; }
+.kpi .value { font-size:1.35rem; font-weight:700; margin-top:4px; }
+.kpi .value.positive { color:#1e5b4f; } .kpi .value.negative { color:#9b2247; }
+.charts-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:20px; }
+.chart-box { background:#fafaf8; border-radius:8px; padding:16px; }
+.chart-box h4 { font-size:.85rem; color:#161a1d; margin-bottom:4px; }
+.chart-box .chart-sub { font-size:.72rem; color:#666; margin-bottom:10px; }
+.chart-box canvas { width:100% !important; max-height:280px; }
+.three-col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px; margin-bottom:20px; }
+.content-box { background:#fafaf8; border-radius:8px; padding:16px; }
+.content-box h3 { font-size:.85rem; color:#9b2247; text-transform:uppercase; margin-bottom:8px; letter-spacing:.3px; }
+.content-box p { font-size:.88rem; color:#333; }
+.table-container { overflow-x:auto; margin-bottom:16px; }
+table { width:100%; border-collapse:collapse; font-size:.82rem; }
+th { background:#611232; color:#fff; padding:8px 10px; text-align:right; font-weight:500; }
+th:first-child { text-align:left; }
+td { padding:7px 10px; text-align:right; border-bottom:1px solid #eee; }
+td:first-child { text-align:left; font-weight:500; }
+tr:hover { background:#f8f6f2; } tr:last-child { background:#fdf5e6; font-weight:600; }
+.num.positive { color:#1e5b4f; } .num.negative { color:#9b2247; }
+.btn-export { display:inline-block; padding:6px 14px; background:#1e5b4f; color:#fff; border:none; border-radius:4px; cursor:pointer; font-size:.78rem; margin-bottom:12px; }
+.btn-comunicado { display:inline-block; padding:8px 16px; background:#9b2247; color:#fff; border-radius:6px; text-decoration:none; font-size:.85rem; margin-top:12px; }
+.btn-comunicado:hover { background:#611232; }
+details { margin-top:16px; } summary { cursor:pointer; font-size:.82rem; color:#9b2247; font-weight:500; }
+details .nota { font-size:.8rem; color:#666; padding:10px; background:#fafaf8; border-radius:4px; margin-top:6px; }
+.footer-banner { width:100%; background:#fff; border-top:3px solid #9b2247; margin-top:30px; }
+.footer-banner img { width:100%; max-width:1200px; display:block; margin:0 auto; }
+.footer-text { text-align:center; padding:12px; color:#98989A; font-size:.78rem; background:#161a1d; }
+@media(max-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.charts-grid,.three-col{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
 
-<div class="header-banner">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABXgAAADZCAIAAAAVEc+MAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A
+<div class="header-banner"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABXgAAADZCAIAAAAVEc+MAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A
 /wD/oL2nkwAAAAlwSFlzAAAmcgAAJnIBISuX7gAAAAd0SU1FB+oDGAAFJgZ85lwAAIAASURBVHja
 7P13lBzXlSB8PhMuvS9vARS8IUAC9AQpkRJFUqKkFqWWabXU5tPMTk/3zumZ2T0zu//tzre755vT
 PaftTLe6JVFqqSla0YjegHAkCBDeV6G8S2/Dvvf2j5cZlagCIVKCPlLi/f1BFrIyIyIjI6Pi3bj3
@@ -1650,132 +1660,334 @@ dW1ibmFpbDpZUmVzb2x1dGlvbgA3Mi8xdO+JvQAAADh0RVh0aWNjOmNvcHlyaWdodABDb3B5cmln
 aHQgKGMpIDE5OTggSGV3bGV0dC1QYWNrYXJkIENvbXBhbnn5V3k3AAAAIXRFWHRpY2M6ZGVzY3Jp
 cHRpb24Ac1JHQiBJRUM2MTk2Ni0yLjFXrdpHAAAAJnRFWHRpY2M6bWFudWZhY3R1cmVyAElFQyBo
 dHRwOi8vd3d3LmllYy5jaBx/AEwAAAA3dEVYdGljYzptb2RlbABJRUMgNjE5NjYtMi4xIERlZmF1
-bHQgUkdCIGNvbG91ciBzcGFjZSAtIHNSR0JEU0ipAAAAAElFTkSuQmCC" alt="Gobierno de M&eacute;xico - Secretar&iacute;a de Econom&iacute;a">
-</div>
+bHQgUkdCIGNvbG91ciBzcGFjZSAtIHNSR0JEU0ipAAAAAElFTkSuQmCC"></div>
 
-<div class="header">
-  <h1>Portal de Indicadores Econ&oacute;micos INEGI</h1>
-  <div class="subtitle">Subsecretar&iacute;a de Industria y Comercio</div>
+<div class="report-title">
+<h1>Indicadores Económicos INEGI</h1>
+<div class="date">24 de marzo de 2026</div>
 </div>
 
 <div class="container">
 
-  <div class="stats-bar">
-    <div class="stat-item">
-      <div class="stat-value">6</div>
-      <div class="stat-label">Reportes diarios</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">23 mar 2026</div>
-      <div class="stat-label">&Uacute;ltima actualizaci&oacute;n</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">15</div>
-      <div class="stat-label">Indicadores procesados</div>
-    </div>
-  </div>
+<div class="executive-summary">
+<h2>Resumen ejecutivo</h2>
+<p>IGAE retrocede 0.92% mensual en enero 2026, crece 0.52% anual. Inflación acelera a 4.63% anual en 1ra quincena de marzo, presionada por agropecuarios (+3.83% quincenal). Construcción crece 0.60% mensual, cuarto mes consecutivo de expansión, pero acumula caída anual de -1.10%.</p>
+</div>
 
-  
-  <div class="section-title">24 de marzo de 2026</div>
-  <div class="cards-grid">
+<div class="tabs">
+<button class="tab-btn active" onclick="switchTab('igae')" aria-selected="true">IGAE</button>
+<button class="tab-btn" onclick="switchTab('inpc')" aria-selected="false">INPC</button>
+<button class="tab-btn" onclick="switchTab('enec')" aria-selected="false">ENEC</button>
+<div class="tab-hint">Navegación: ← → Teclado</div>
+</div>
 
-    <a class="card" href="reporte_2026-03-24.html">
-      <div class="card-accent guinda"></div>
-      <div class="card-body">
-        <span class="card-tag consolidado">Reporte Consolidado</span>
-        <div class="card-title">Actividad Econ&oacute;mica + Inflaci&oacute;n + Construcci&oacute;n</div>
-        <div class="card-date">24 de marzo de 2026 | 3 indicadores</div>
-        <div class="indicator-pills">
-          <span class="pill">IGAE: -0.92% mensual</span>
-          <span class="pill">INPC: 4.63% anual</span>
-          <span class="pill">ENEC: +0.60% mensual</span>
-        </div>
-        <div class="card-kpi neutral">4.63%</div>
-        <div class="card-desc">IGAE retrocede 0.92% mensual en enero 2026, crece 0.52% anual. Inflaci&oacute;n acelera a 4.63% anual en 1a quincena de marzo, presionada por agropecuarios (+3.83% quincenal). Construcci&oacute;n crece 0.60% mensual, tercer mes consecutivo de expansi&oacute;n, pero acumula 12 meses de ca&iacute;da anual (-1.10%).</div>
-      </div>
-      <div class="card-footer">Ver reporte consolidado</div>
-    </a>
+<!-- TAB 1: IGAE -->
+<div id="tab-igae" class="tab-content active">
 
-  </div>
+<div class="highlight-box">
+<div class="dato">-0.92%</div>
+<div class="desc">Variación mensual IGAE, enero 2026</div>
+</div>
 
-<div class="section-title">23 de marzo de 2026</div>
-  <div class="cards-grid">
+<div class="kpi-grid">
+<div class="kpi red">
+<div class="label">Índice Total</div>
+<div class="value">104.64</div>
+</div>
+<div class="kpi red">
+<div class="label">Var. Mensual</div>
+<div class="value negative">-0.92%</div>
+</div>
+<div class="kpi green">
+<div class="label">Var. Anual</div>
+<div class="value positive">+0.52%</div>
+</div>
+<div class="kpi red">
+<div class="label">Secundarias VA</div>
+<div class="value negative">-0.07%</div>
+</div>
+</div>
 
-    <a class="card" href="reporte_2026-03-23.html">
-      <div class="card-accent guinda"></div>
-      <div class="card-body">
-        <span class="card-tag consolidado">Reporte Consolidado</span>
-        <div class="card-title">Empresas Comerciales + Servicios + Minerometalurgia + Maquiladora y Exportaci&oacute;n + Manufactura Oportuno</div>
-        <div class="card-date">23 de marzo de 2026 | 5 indicadores</div>
-        <div class="indicator-pills">
-          <span class="pill">Comercio menor: +4.73% anual</span>
-          <span class="pill">Servicios: +0.30% mensual</span>
-          <span class="pill">Miner&iacute;a: +1.46% mensual</span>
-          <span class="pill">Personal maquiladora: -0.03%</span>
-          <span class="pill">Manufactura oportuno: -4.6% anual</span>
-        </div>
-        <div class="card-kpi positive">+4.73%</div>
-        <div class="card-desc">Comercio menudeo +4.73% variaci&oacute;n anual, mayoreo primera variaci&oacute;n positiva en 12 meses (+1.87%). Miner&iacute;a rebota +1.46% mensual tras 3 meses de ca&iacute;da. Servicios +0.30% mensual pero primera variaci&oacute;n anual negativa (-0.67%). Maquiladora estable, horas -0.58%. Manufactura oportuna estima -4.6% anual febrero 2026.</div>
-      </div>
-      <div class="card-footer">Ver reporte consolidado</div>
-    </a>
+<div class="charts-grid">
+<div class="chart-box">
+<h4>IGAE Total Index</h4>
+<div class="chart-sub">Enero 2025 - Enero 2026</div>
+<canvas id="chart-igae-idx"></canvas>
+</div>
+<div class="chart-box">
+<h4>Variación Anual</h4>
+<div class="chart-sub">Por mes</div>
+<canvas id="chart-igae-va"></canvas>
+</div>
+</div>
 
-  </div>
+<div class="table-container">
+<table id="table-igae">
+<thead>
+<tr>
+<th>Período</th>
+<th>Índice Total</th>
+<th>VM %</th>
+<th>VA %</th>
+<th>Sec. Índice</th>
+<th>Sec. VM %</th>
+<th>Sec. VA %</th>
+<th>Terc. Índice</th>
+<th>Terc. VM %</th>
+<th>Terc. VA %</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>Enero 2025</td><td>104.10</td><td class="num positive">0.82%</td><td class="num negative">-0.09%</td><td>100.33</td><td class="num positive">0.30%</td><td class="num negative">-3.23%</td><td>106.08</td><td class="num positive">0.61%</td><td class="num positive">1.10%</td></tr>
+<tr><td>Febrero 2025</td><td>104.81</td><td class="num positive">0.68%</td><td class="num positive">0.30%</td><td>102.18</td><td class="num positive">1.84%</td><td class="num positive">0.02%</td><td>106.57</td><td class="num positive">0.46%</td><td class="num positive">0.93%</td></tr>
+<tr><td>Marzo 2025</td><td>104.63</td><td class="num negative">-0.17%</td><td class="num negative">-0.16%</td><td>101.43</td><td class="num negative">-0.73%</td><td class="num negative">-1.17%</td><td>106.30</td><td class="num negative">-0.25%</td><td class="num positive">0.32%</td></tr>
+<tr><td>Abril 2025</td><td>104.69</td><td class="num positive">0.06%</td><td class="num positive">1.30%</td><td>101.30</td><td class="num negative">-0.14%</td><td class="num negative">-0.75%</td><td>106.71</td><td class="num positive">0.38%</td><td class="num positive">2.30%</td></tr>
+<tr><td>Mayo 2025</td><td>105.08</td><td class="num positive">0.37%</td><td class="num positive">0.64%</td><td>101.85</td><td class="num positive">0.54%</td><td class="num negative">-0.30%</td><td>106.71</td><td class="num positive">0.00%</td><td class="num positive">1.00%</td></tr>
+<tr><td>Junio 2025</td><td>105.10</td><td class="num positive">0.02%</td><td class="num positive">0.61%</td><td>101.45</td><td class="num negative">-0.39%</td><td class="num negative">-0.89%</td><td>106.84</td><td class="num positive">0.12%</td><td class="num positive">1.15%</td></tr>
+<tr><td>Julio 2025</td><td>104.77</td><td class="num negative">-0.32%</td><td class="num negative">-0.94%</td><td>100.37</td><td class="num negative">-1.06%</td><td class="num negative">-2.57%</td><td>106.74</td><td class="num negative">-0.10%</td><td class="num positive">0.54%</td></tr>
+<tr><td>Agosto 2025</td><td>105.11</td><td class="num positive">0.32%</td><td class="num positive">0.41%</td><td>100.11</td><td class="num negative">-0.26%</td><td class="num negative">-2.30%</td><td>107.25</td><td class="num positive">0.47%</td><td class="num positive">1.05%</td></tr>
+<tr><td>Septiembre 2025</td><td>104.68</td><td class="num negative">-0.41%</td><td class="num negative">-0.29%</td><td>99.89</td><td class="num negative">-0.23%</td><td class="num negative">-3.11%</td><td>106.96</td><td class="num negative">-0.27%</td><td class="num positive">0.97%</td></tr>
+<tr><td>Octubre 2025</td><td>105.66</td><td class="num positive">0.94%</td><td class="num positive">1.64%</td><td>100.71</td><td class="num positive">0.82%</td><td class="num negative">-0.52%</td><td>108.03</td><td class="num positive">1.00%</td><td class="num positive">2.38%</td></tr>
+<tr><td>Noviembre 2025</td><td>105.42</td><td class="num negative">-0.23%</td><td class="num positive">0.99%</td><td>101.27</td><td class="num positive">0.56%</td><td class="num negative">-0.10%</td><td>107.56</td><td class="num negative">-0.43%</td><td class="num positive">1.39%</td></tr>
+<tr><td>Diciembre 2025</td><td>105.61</td><td class="num positive">0.17%</td><td class="num positive">2.27%</td><td>101.38</td><td class="num positive">0.11%</td><td class="num positive">1.34%</td><td>107.68</td><td class="num positive">0.11%</td><td class="num positive">2.13%</td></tr>
+<tr><td>Enero 2026</td><td>104.64</td><td class="num negative">-0.92%</td><td class="num positive">0.52%</td><td>100.27</td><td class="num negative">-1.09%</td><td class="num negative">-0.07%</td><td>107.02</td><td class="num negative">-0.61%</td><td class="num positive">0.89%</td></tr>
+</tbody>
+</table>
+</div>
 
-  <div class="section-title">20 de marzo de 2026</div>
-  <div class="cards-grid">
+<button class="btn-export" onclick="exportCSV('table-igae')">Exportar CSV</button>
+<a href="https://www.inegi.org.mx/app/saladeprensa/noticia/10741" class="btn-comunicado">Comunicado oficial</a>
 
-    <a class="card" href="reporte_2026-03-20.html">
-      <div class="card-accent verde"></div>
-      <div class="card-body">
-        <span class="card-tag indicador">Indicadores</span>
-        <div class="card-title">Actividad Econ&oacute;mica Oportuno + Oferta y Demanda Global Trimestral</div>
-        <div class="card-date">20 de marzo de 2026 | 2 indicadores</div>
-        <div class="indicator-pills">
-          <span class="pill">Actividad econ&oacute;mica: +1.2% anual</span>
-          <span class="pill">Oferta global: +2.4% trimestral</span>
-        </div>
-        <div class="card-kpi positive">+1.2%</div>
-        <div class="card-desc">Indicador oportuno estima crecimiento de actividad econ&oacute;mica de 1.2% anual para febrero 2026. Terciarias +1.9%, secundarias -1.9%. Oferta global +2.4% trimestral en el cuarto trimestre 2025, PIB +0.86% trimestral, ahorro bruto +3.5%.</div>
-      </div>
-      <div class="card-footer">Ver reporte consolidado</div>
-    </a>
+<div class="three-col">
+<div class="content-box">
+<h3>Análisis</h3>
+<p>El IGAE retrocede 0.92% mensual en enero 2026, la mayor caída mensual desde julio 2025 (-0.32%). A tasa anual crece 0.52%, desacelerando desde el 2.27% de diciembre 2025. Las actividades secundarias registran -0.07% anual. Las terciarias crecen 0.89% anual pero desaceleran desde 2.13% en diciembre.</p>
+</div>
+<div class="content-box">
+<h3>Lectura Estratégica</h3>
+<p>El IGAE retrocede 0.92% mensual en enero 2026, la mayor caída mensual desde julio 2025 (-0.32%). Las actividades secundarias registran variación anual de -0.07%, acumulando 10 de 13 meses en terreno negativo durante 2025. Las terciarias sostienen la actividad con +0.89% anual, aunque desaceleran respecto al +2.13% de diciembre.</p>
+</div>
+<div class="content-box">
+<h3>Contexto de Mercado</h3>
+<p>PIB 2025 creció 0.8% (México Cómo Vamos, febrero 2026). Expectativa PIB 2026: 1.4% consensus, 2.5-3.0% gobierno. Gabriela Siller (Banco Base): si no hay crecimiento mensual en feb-mar, PIB 1T2026 crecería 0.41%. IOAE febrero: +1.2% anual estimado.</p>
+</div>
+</div>
 
-  </div>
-
-  <div class="section-title">19 de marzo de 2026</div>
-  <div class="cards-grid">
-
-    <a class="card" href="CNGMD_2026-03-19.html">
-      <div class="card-accent dorado"></div>
-      <div class="card-body">
-        <span class="card-tag censo">Censo</span>
-        <div class="card-title">Censo Nacional de Gobiernos Municipales y Demarcaciones Territoriales 2025</div>
-        <div class="card-date">19 de marzo de 2026</div>
-        <div class="card-kpi neutral">24.9%</div>
-        <div class="card-desc">Presidentas municipales y alcaldesas en 2024. Aumento de 2 puntos porcentuales respecto a 2022. 516 municipios sin instituci&oacute;n de seguridad p&uacute;blica.</div>
-      </div>
-      <div class="card-footer">Ver reporte completo</div>
-    </a>
-
-    <a class="card" href="IOCP_2026-03-19.html">
-      <div class="card-accent verde"></div>
-      <div class="card-body">
-        <span class="card-tag indicador">Indicador</span>
-        <div class="card-title">Indicador Oportuno del Consumo Privado</div>
-        <div class="card-date">19 de marzo de 2026</div>
-        <div class="card-kpi positive">+4.7%</div>
-        <div class="card-desc">Estimaci&oacute;n oportuna del consumo privado para enero 2026 (variaci&oacute;n anual). Anticipa +3.5% para febrero. Recuperaci&oacute;n tras contracci&oacute;n.</div>
-      </div>
-      <div class="card-footer">Ver reporte completo</div>
-    </a>
-
-  </div>
+<details>
+<summary>Nota metodológica</summary>
+<div class="nota">El IGAE permite conocer y dar seguimiento a la evolución del sector real de la economía en el corto plazo. Serie desestacionalizada, base 2018=100.</div>
+</details>
 
 </div>
 
-<div class="footer-banner">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABXgAAADnCAIAAAArYalRAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A
+<!-- TAB 2: INPC -->
+<div id="tab-inpc" class="tab-content">
+
+<div class="highlight-box">
+<div class="dato">4.63%</div>
+<div class="desc">Inflación anual, 1ra quincena marzo 2026</div>
+</div>
+
+<div class="kpi-grid">
+<div class="kpi red">
+<div class="label">INPC</div>
+<div class="value">145.446</div>
+</div>
+<div class="kpi red">
+<div class="label">Quincenal</div>
+<div class="value negative">+0.62%</div>
+</div>
+<div class="kpi red">
+<div class="label">Anual</div>
+<div class="value negative">4.63%</div>
+</div>
+<div class="kpi green">
+<div class="label">Subyacente</div>
+<div class="value positive">+0.22%</div>
+</div>
+</div>
+
+<div class="charts-grid">
+<div class="chart-box">
+<h4>Inflación Quincenal</h4>
+<div class="chart-sub">General vs Subyacente, últimos 12 periodos</div>
+<canvas id="chart-inpc-line"></canvas>
+</div>
+<div class="chart-box">
+<h4>Componentes Inflacionarios</h4>
+<div class="chart-sub">Marzo 2026 1ra quincena</div>
+<canvas id="chart-inpc-comp"></canvas>
+</div>
+</div>
+
+<div class="table-container">
+<table id="table-inpc">
+<thead>
+<tr>
+<th>Período</th>
+<th>General %</th>
+<th>Subyacente %</th>
+<th>Mercancías %</th>
+<th>Servicios %</th>
+<th>No Subyacente %</th>
+<th>Agropecuarios %</th>
+<th>Energéticos %</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>Mar 2025 1Q</td><td class="num positive">0.14%</td><td class="num positive">0.24%</td><td class="num positive">0.25%</td><td class="num positive">0.22%</td><td class="num negative">-0.19%</td><td class="num positive">0.09%</td><td class="num negative">-0.41%</td></tr>
+<tr><td>Mar 2025 2Q</td><td class="num positive">0.21%</td><td class="num positive">0.18%</td><td class="num positive">0.18%</td><td class="num positive">0.18%</td><td class="num positive">0.34%</td><td class="num positive">1.00%</td><td class="num negative">-0.16%</td></tr>
+<tr><td>Abr 2025 1Q</td><td class="num positive">0.12%</td><td class="num positive">0.34%</td><td class="num positive">0.47%</td><td class="num positive">0.21%</td><td class="num negative">-0.59%</td><td class="num positive">0.60%</td><td class="num negative">-1.50%</td></tr>
+<tr><td>Abr 2025 2Q</td><td class="num positive">0.20%</td><td class="num positive">0.13%</td><td class="num positive">0.25%</td><td class="num positive">0.01%</td><td class="num positive">0.42%</td><td class="num positive">0.98%</td><td class="num negative">-0.02%</td></tr>
+<tr><td>May 2025 1Q</td><td class="num positive">0.09%</td><td class="num positive">0.16%</td><td class="num positive">0.13%</td><td class="num positive">0.18%</td><td class="num negative">-0.15%</td><td class="num positive">2.30%</td><td class="num negative">-2.10%</td></tr>
+<tr><td>May 2025 2Q</td><td class="num positive">0.19%</td><td class="num positive">0.15%</td><td class="num positive">0.19%</td><td class="num positive">0.10%</td><td class="num positive">0.35%</td><td class="num positive">0.80%</td><td class="num negative">-0.03%</td></tr>
+<tr><td>Jun 2025 1Q</td><td class="num negative">-0.21%</td><td class="num positive">0.17%</td><td class="num positive">0.06%</td><td class="num positive">0.27%</td><td class="num negative">-1.49%</td><td class="num positive">0.64%</td><td class="num negative">-3.14%</td></tr>
+<tr><td>Jun 2025 2Q</td><td class="num positive">0.26%</td><td class="num positive">0.11%</td><td class="num positive">0.03%</td><td class="num positive">0.19%</td><td class="num positive">0.77%</td><td class="num positive">1.29%</td><td class="num positive">0.36%</td></tr>
+<tr><td>Jul 2025 1Q</td><td class="num positive">0.37%</td><td class="num positive">0.08%</td><td class="num positive">0.04%</td><td class="num positive">0.12%</td><td class="num positive">1.33%</td><td class="num positive">0.66%</td><td class="num positive">1.87%</td></tr>
+<tr><td>Jul 2025 2Q</td><td class="num positive">0.22%</td><td class="num positive">0.11%</td><td class="num positive">0.14%</td><td class="num positive">0.09%</td><td class="num positive">0.62%</td><td class="num positive">1.34%</td><td class="num positive">0.04%</td></tr>
+<tr><td>Ago 2025 1Q</td><td class="num positive">0.15%</td><td class="num positive">0.20%</td><td class="num positive">0.02%</td><td class="num positive">0.37%</td><td class="num negative">-0.14%</td><td class="num positive">0.76%</td><td class="num negative">-0.86%</td></tr>
+<tr><td>Ago 2025 2Q</td><td class="num positive">0.17%</td><td class="num positive">0.16%</td><td class="num positive">0.12%</td><td class="num positive">0.20%</td><td class="num positive">0.21%</td><td class="num positive">0.77%</td><td class="num negative">-0.22%</td></tr>
+<tr><td>Sep 2025 1Q</td><td class="num positive">0.28%</td><td class="num positive">0.08%</td><td class="num positive">0.03%</td><td class="num positive">0.12%</td><td class="num positive">0.94%</td><td class="num negative">-0.47%</td><td class="num positive">2.05%</td></tr>
+<tr><td>Sep 2025 2Q</td><td class="num positive">0.02%</td><td class="num positive">0.09%</td><td class="num positive">0.07%</td><td class="num positive">0.11%</td><td class="num negative">-0.21%</td><td class="num negative">-0.47%</td><td class="num positive">0.01%</td></tr>
+<tr><td>Oct 2025 1Q</td><td class="num positive">0.28%</td><td class="num positive">0.18%</td><td class="num positive">0.09%</td><td class="num positive">0.26%</td><td class="num positive">0.64%</td><td class="num negative">-0.77%</td><td class="num positive">1.79%</td></tr>
+<tr><td>Oct 2025 2Q</td><td class="num positive">0.14%</td><td class="num positive">0.13%</td><td class="num positive">0.10%</td><td class="num positive">0.15%</td><td class="num positive">0.19%</td><td class="num positive">0.20%</td><td class="num positive">0.18%</td></tr>
+<tr><td>Nov 2025 1Q</td><td class="num positive">0.47%</td><td class="num positive">0.04%</td><td class="num negative">-0.19%</td><td class="num positive">0.25%</td><td class="num positive">1.93%</td><td class="num positive">0.69%</td><td class="num positive">2.92%</td></tr>
+<tr><td>Nov 2025 2Q</td><td class="num positive">0.24%</td><td class="num positive">0.17%</td><td class="num positive">0.21%</td><td class="num positive">0.13%</td><td class="num positive">0.50%</td><td class="num positive">1.26%</td><td class="num negative">-0.09%</td></tr>
+<tr><td>Dic 2025 1Q</td><td class="num positive">0.17%</td><td class="num positive">0.31%</td><td class="num positive">0.13%</td><td class="num positive">0.47%</td><td class="num negative">-0.30%</td><td class="num negative">-0.93%</td><td class="num positive">0.21%</td></tr>
+<tr><td>Dic 2025 2Q</td><td class="num negative">-0.02%</td><td class="num positive">0.04%</td><td class="num positive">0.19%</td><td class="num negative">-0.11%</td><td class="num negative">-0.21%</td><td class="num negative">-0.69%</td><td class="num positive">0.17%</td></tr>
+<tr><td>Ene 2026 1Q</td><td class="num positive">0.31%</td><td class="num positive">0.43%</td><td class="num positive">0.69%</td><td class="num positive">0.19%</td><td class="num negative">-0.12%</td><td class="num negative">-0.20%</td><td class="num negative">-0.06%</td></tr>
+<tr><td>Ene 2026 2Q</td><td class="num positive">0.17%</td><td class="num positive">0.30%</td><td class="num positive">0.27%</td><td class="num positive">0.33%</td><td class="num negative">-0.27%</td><td class="num negative">-0.65%</td><td class="num positive">0.03%</td></tr>
+<tr><td>Feb 2026 1Q</td><td class="num positive">0.25%</td><td class="num positive">0.22%</td><td class="num positive">0.20%</td><td class="num positive">0.24%</td><td class="num positive">0.32%</td><td class="num positive">0.75%</td><td class="num negative">-0.01%</td></tr>
+<tr><td>Feb 2026 2Q</td><td class="num positive">0.34%</td><td class="num positive">0.17%</td><td class="num positive">0.10%</td><td class="num positive">0.24%</td><td class="num positive">0.91%</td><td class="num positive">2.05%</td><td class="num positive">0.02%</td></tr>
+<tr><td>Mar 2026 1Q</td><td class="num positive">0.62%</td><td class="num positive">0.22%</td><td class="num positive">0.20%</td><td class="num positive">0.25%</td><td class="num positive">1.96%</td><td class="num positive">3.83%</td><td class="num positive">0.48%</td></tr>
+</tbody>
+</table>
+</div>
+
+<button class="btn-export" onclick="exportCSV('table-inpc')">Exportar CSV</button>
+<a href="https://www.inegi.org.mx/app/saladeprensa/noticia/10739" class="btn-comunicado">Comunicado oficial</a>
+
+<div class="three-col">
+<div class="content-box">
+<h3>Análisis</h3>
+<p>La inflación quincenal de 0.62% es la más alta para una primera quincena de marzo desde 2022. La inflación anual de 4.63% se ubica fuera del rango objetivo de Banxico (3% ±1pp). El componente no subyacente (+1.96%) impulsa el repunte, con agropecuarios subiendo 3.83% quincenal. La subyacente se mantiene contenida en 0.22%.</p>
+</div>
+<div class="content-box">
+<h3>Lectura Estratégica</h3>
+<p>La inflación anual de 4.63% supera el techo del rango meta de Banxico (4%) por primera vez en 2026. El componente agropecuario (+3.83% quincenal) explica el grueso del repunte. La subyacente (+0.22%) se mantiene debajo del promedio de los últimos 6 periodos (0.19%).</p>
+</div>
+<div class="content-box">
+<h3>Contexto de Mercado</h3>
+<p>Banxico mantiene tasa en 9.00%. Expectativa inflación cierre 2026: 3.90% general (Encuesta Citi). Meta Banxico: 3% ±1pp. Inflación enero 2026 fue 3.79% anual.</p>
+</div>
+</div>
+
+<details>
+<summary>Nota metodológica</summary>
+<div class="nota">El INPC mide la variación de precios de una canasta representativa del gasto de los hogares. Base 2da quincena julio 2018=100. Actualización de canasta y ponderadores 2024.</div>
+</details>
+
+</div>
+
+<!-- TAB 3: ENEC -->
+<div id="tab-enec" class="tab-content">
+
+<div class="highlight-box">
+<div class="dato">+0.60%</div>
+<div class="desc">Variación mensual valor de producción, enero 2026</div>
+</div>
+
+<div class="kpi-grid">
+<div class="kpi green">
+<div class="label">VP Índice</div>
+<div class="value">82.17</div>
+</div>
+<div class="kpi green">
+<div class="label">VP VM</div>
+<div class="value positive">+0.60%</div>
+</div>
+<div class="kpi red">
+<div class="label">VP VA</div>
+<div class="value negative">-1.10%</div>
+</div>
+<div class="kpi red">
+<div class="label">PO VA</div>
+<div class="value negative">-3.79%</div>
+</div>
+</div>
+
+<div class="charts-grid">
+<div class="chart-box">
+<h4>Valor de Producción Índice</h4>
+<div class="chart-sub">Enero 2025 - Enero 2026</div>
+<canvas id="chart-enec-idx"></canvas>
+</div>
+<div class="chart-box">
+<h4>Variación Mensual</h4>
+<div class="chart-sub">Por mes</div>
+<canvas id="chart-enec-vm"></canvas>
+</div>
+</div>
+
+<div class="table-container">
+<table id="table-enec">
+<thead>
+<tr>
+<th>Período</th>
+<th>VP Índice</th>
+<th>VP VM %</th>
+<th>VP VA %</th>
+<th>PO Índice</th>
+<th>PO VM %</th>
+<th>PO VA %</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>Enero 2025</td><td>83.09</td><td class="num negative">-3.88%</td><td class="num negative">-19.63%</td><td>84.62</td><td class="num negative">-0.26%</td><td class="num negative">-7.48%</td></tr>
+<tr><td>Febrero 2025</td><td>83.12</td><td class="num positive">0.04%</td><td class="num negative">-17.03%</td><td>84.33</td><td class="num negative">-0.34%</td><td class="num negative">-9.54%</td></tr>
+<tr><td>Marzo 2025</td><td>83.72</td><td class="num positive">0.72%</td><td class="num negative">-14.67%</td><td>84.19</td><td class="num negative">-0.17%</td><td class="num negative">-9.87%</td></tr>
+<tr><td>Abril 2025</td><td>83.55</td><td class="num negative">-0.21%</td><td class="num negative">-14.83%</td><td>84.06</td><td class="num negative">-0.16%</td><td class="num negative">-9.09%</td></tr>
+<tr><td>Mayo 2025</td><td>81.70</td><td class="num negative">-2.21%</td><td class="num negative">-16.86%</td><td>82.73</td><td class="num negative">-1.58%</td><td class="num negative">-11.76%</td></tr>
+<tr><td>Junio 2025</td><td>82.48</td><td class="num positive">0.95%</td><td class="num negative">-18.20%</td><td>82.34</td><td class="num negative">-0.47%</td><td class="num negative">-11.24%</td></tr>
+<tr><td>Julio 2025</td><td>81.09</td><td class="num negative">-1.68%</td><td class="num negative">-17.81%</td><td>81.85</td><td class="num negative">-0.60%</td><td class="num negative">-11.46%</td></tr>
+<tr><td>Agosto 2025</td><td>79.03</td><td class="num negative">-2.54%</td><td class="num negative">-18.92%</td><td>81.52</td><td class="num negative">-0.40%</td><td class="num negative">-11.44%</td></tr>
+<tr><td>Septiembre 2025</td><td>78.32</td><td class="num negative">-0.91%</td><td class="num negative">-14.98%</td><td>81.53</td><td class="num positive">0.01%</td><td class="num negative">-9.82%</td></tr>
+<tr><td>Octubre 2025</td><td>78.75</td><td class="num positive">0.55%</td><td class="num negative">-13.47%</td><td>81.76</td><td class="num positive">0.29%</td><td class="num negative">-6.68%</td></tr>
+<tr><td>Noviembre 2025</td><td>80.22</td><td class="num positive">1.87%</td><td class="num negative">-7.76%</td><td>81.46</td><td class="num negative">-0.37%</td><td class="num negative">-4.08%</td></tr>
+<tr><td>Diciembre 2025</td><td>81.68</td><td class="num positive">1.82%</td><td class="num negative">-5.51%</td><td>81.50</td><td class="num positive">0.05%</td><td class="num negative">-3.94%</td></tr>
+<tr><td>Enero 2026</td><td>82.17</td><td class="num positive">0.60%</td><td class="num negative">-1.10%</td><td>81.41</td><td class="num negative">-0.11%</td><td class="num negative">-3.79%</td></tr>
+</tbody>
+</table>
+</div>
+
+<button class="btn-export" onclick="exportCSV('table-enec')">Exportar CSV</button>
+<a href="https://www.inegi.org.mx/app/saladeprensa/noticia/10740" class="btn-comunicado">Comunicado oficial</a>
+
+<div class="three-col">
+<div class="content-box">
+<h3>Análisis</h3>
+<p>El valor de producción de las empresas constructoras creció 0.60% mensual en enero 2026, hilando 4 meses consecutivos de expansión mensual. La caída anual se redujo a -1.10%, desde -19.63% hace un año. El personal ocupado cayó 3.79% anual, pero mejora desde el -7.48% de enero 2025.</p>
+</div>
+<div class="content-box">
+<h3>Lectura Estratégica</h3>
+<p>El valor de producción del sector construcción acumula 4 meses consecutivos de crecimiento mensual (+0.55%, +1.87%, +1.82%, +0.60%). La contracción anual se redujo de -19.63% en enero 2025 a -1.10% en enero 2026, acercándose a territorio positivo por primera vez en más de un año.</p>
+</div>
+<div class="content-box">
+<h3>Contexto de Mercado</h3>
+<p>El sector construcción acumula 13 meses consecutivos de caída anual en valor de producción. Personal ocupado total cayó 3.79% anual, mejorando desde -7.48% un año antes. Los datos de noviembre y diciembre 2025 mostraron señales de recuperación con +1.87% y +1.82% mensual respectivamente.</p>
+</div>
+</div>
+
+<details>
+<summary>Nota metodológica</summary>
+<div class="nota">La ENEC mide la evolución del sector de la construcción. Serie desestacionalizada, base 2018=100. Cubre empresas constructoras del sector formal.</div>
+</details>
+
+</div>
+
+</div>
+
+<div class="footer-banner"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABXgAAADnCAIAAAArYalRAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A
 /wD/oL2nkwAAAAlwSFlzAAAmcgAAJnIBISuX7gAAAAd0SU1FB+oDGAAFJgZ85lwAAIAASURBVHja
 7N15oGRVdS/+tfY+U81157nneYZumgZkFAQHMDjExAF9GdQYkxdfzC/mZVCjLy/PmERjokYTE6eo
 KIjiAIKMzdDQ0DTdDT2Pt2/fearxnLP3Wr8/9qnqC5qIPh8XcX8Euu69davOOXW77f2ttddCZgbL
@@ -2674,9 +2886,64 @@ AB90RVh0ZXhpZjp0aHVtYm5haWw6WVJlc29sdXRpb24ANzIvMXTvib0AAAA4dEVYdGljYzpjb3B5
 cmlnaHQAQ29weXJpZ2h0IChjKSAxOTk4IEhld2xldHQtUGFja2FyZCBDb21wYW55+Vd5NwAAACF0
 RVh0aWNjOmRlc2NyaXB0aW9uAHNSR0IgSUVDNjE5NjYtMi4xV63aRwAAACZ0RVh0aWNjOm1hbnVm
 YWN0dXJlcgBJRUMgaHR0cDovL3d3dy5pZWMuY2gcfwBMAAAAN3RFWHRpY2M6bW9kZWwASUVDIDYx
-OTY2LTIuMSBEZWZhdWx0IFJHQiBjb2xvdXIgc3BhY2UgLSBzUkdCRFNIqQAAAABJRU5ErkJggg==" alt="2026, a&ntilde;o de Margarita Maza">
-</div>
-<div class="footer-text">Subsecretar&iacute;a de Industria y Comercio | Portal de Indicadores Econ&oacute;micos | Actualizado autom&aacute;ticamente</div>
+OTY2LTIuMSBEZWZhdWx0IFJHQiBjb2xvdXIgc3BhY2UgLSBzUkdCRFNIqQAAAABJRU5ErkJggg=="></div>
+<div class="footer-text">Subsecretaría de Industria y Comercio · Generado el 24 de marzo de 2026</div>
+
+<script>
+Chart.defaults.responsive=true;
+Chart.defaults.maintainAspectRatio=true;
+Chart.defaults.font.size=11;
+
+function switchTab(id){
+  document.querySelectorAll(".tab-content").forEach(function(t){t.classList.remove("active");});
+  document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");b.setAttribute("aria-selected","false");});
+  document.getElementById("tab-"+id).classList.add("active");
+  var ids=["igae","inpc","enec"];
+  var btns=document.querySelectorAll(".tab-btn");
+  for(var i=0;i<btns.length;i++){if(ids[i]===id){btns[i].classList.add("active");btns[i].setAttribute("aria-selected","true");}}
+  history.replaceState(null,"","#"+id);
+}
+
+document.addEventListener("keydown",function(e){
+  if(e.key==="ArrowLeft"||e.key==="ArrowRight"){
+    var tabs=["igae","inpc","enec"];
+    var curr=tabs.indexOf(document.querySelector(".tab-content.active").id.replace("tab-",""));
+    switchTab(tabs[e.key==="ArrowRight"?(curr+1)%3:(curr-1+3)%3]);
+  }
+});
+
+if(window.location.hash){var h=window.location.hash.substring(1);if(["igae","inpc","enec"].indexOf(h)>=0)switchTab(h);}
+
+function exportCSV(tableId){
+  var table=document.getElementById(tableId);
+  var rows=table.querySelectorAll("tr");
+  var csv=[];
+  rows.forEach(function(row){
+    var cols=row.querySelectorAll("th,td");
+    csv.push(Array.from(cols).map(function(c){return '"'+c.textContent.trim().replace(/"/g,'""')+'"';}).join(","));
+  });
+  var blob=new Blob([csv.join("\n")],{type:"text/csv"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=tableId+".csv";
+  a.click();
+}
+
+var cVerde="#1e5b4f",cLight="rgba(30,91,79,0.1)",cRojo="#9b2247",cRojoLight="rgba(155,34,71,0.1)",cDorado="#a57f2c";
+
+new Chart(document.getElementById("chart-igae-idx"),{type:"line",data:{labels:["Ene 25","Feb 25","Mar 25","Abr 25","May 25","Jun 25","Jul 25","Ago 25","Sep 25","Oct 25","Nov 25","Dic 25","Ene 26"],datasets:[{label:"IGAE Total",data:[104.10,104.81,104.63,104.69,105.08,105.10,104.77,105.11,104.68,105.66,105.42,105.61,104.64],borderColor:cVerde,backgroundColor:cLight,borderWidth:2,fill:true,tension:.3,pointRadius:3}]},options:{plugins:{legend:{position:"bottom"}}}});
+
+new Chart(document.getElementById("chart-igae-va"),{type:"bar",data:{labels:["Ene 25","Feb 25","Mar 25","Abr 25","May 25","Jun 25","Jul 25","Ago 25","Sep 25","Oct 25","Nov 25","Dic 25","Ene 26"],datasets:[{label:"Var. anual total",data:[-0.09,0.30,-0.16,1.30,0.64,0.61,-0.94,0.41,-0.29,1.64,0.99,2.27,0.52],backgroundColor:["#9b2247","#1e5b4f","#9b2247","#1e5b4f","#1e5b4f","#1e5b4f","#9b2247","#1e5b4f","#9b2247","#1e5b4f","#1e5b4f","#1e5b4f","#1e5b4f"]}]},options:{plugins:{legend:{position:"bottom"}},scales:{y:{grid:{color:function(c){return c.tick.value===0?"#B72F05":"rgba(134,150,162,0.3)";},lineWidth:function(c){return c.tick.value===0?1.5:0.5;}}}}}});
+
+new Chart(document.getElementById("chart-inpc-line"),{type:"line",data:{labels:["Nov 25 2Q","Dic 25 1Q","Dic 25 2Q","Ene 26 1Q","Ene 26 2Q","Feb 26 1Q","Feb 26 2Q","Mar 26 1Q"],datasets:[{label:"Inflación General",data:[0.24,-0.02,0.17,0.31,0.17,0.25,0.34,0.62],borderColor:cRojo,backgroundColor:cRojoLight,borderWidth:2,fill:true,tension:.3,pointRadius:3},{label:"Inflación Subyacente",data:[0.17,0.04,0.30,0.43,0.30,0.22,0.17,0.22],borderColor:cVerde,borderWidth:2,borderDash:[5,3],fill:false,tension:.3,pointRadius:3}]},options:{plugins:{legend:{position:"bottom",labels:{font:{size:10}}}}}});
+
+new Chart(document.getElementById("chart-inpc-comp"),{type:"bar",data:{labels:["General","Subyacente","Mercancías","Servicios","No Subyacente","Agropecuarios","Energéticos"],datasets:[{label:"Mar 2026 1Q %",data:[0.62,0.22,0.20,0.25,1.96,3.83,0.48],backgroundColor:[cRojo,cVerde,"#808080","#606060",cDorado,"#d4a574","#a0a0a0"]}]},options:{indexAxis:"y",plugins:{legend:{position:"bottom"}},scales:{x:{grid:{color:function(c){return c.tick.value===0?"#B72F05":"rgba(134,150,162,0.3)";},lineWidth:function(c){return c.tick.value===0?1.5:0.5;}}}}}});
+
+new Chart(document.getElementById("chart-enec-idx"),{type:"line",data:{labels:["Ene 25","Feb 25","Mar 25","Abr 25","May 25","Jun 25","Jul 25","Ago 25","Sep 25","Oct 25","Nov 25","Dic 25","Ene 26"],datasets:[{label:"VP Índice",data:[83.09,83.12,83.72,83.55,81.70,82.48,81.09,79.03,78.32,78.75,80.22,81.68,82.17],borderColor:cVerde,backgroundColor:cLight,borderWidth:2,fill:true,tension:.3,pointRadius:3}]},options:{plugins:{legend:{position:"bottom"}}}});
+
+new Chart(document.getElementById("chart-enec-vm"),{type:"bar",data:{labels:["Ene 25","Feb 25","Mar 25","Abr 25","May 25","Jun 25","Jul 25","Ago 25","Sep 25","Oct 25","Nov 25","Dic 25","Ene 26"],datasets:[{label:"Var. mensual %",data:[-3.88,0.04,0.72,-0.21,-2.21,0.95,-1.68,-2.54,-0.91,0.55,1.87,1.82,0.60],backgroundColor:["#9b2247","#1e5b4f","#1e5b4f","#9b2247","#9b2247","#1e5b4f","#9b2247","#9b2247","#9b2247","#1e5b4f","#1e5b4f","#1e5b4f","#1e5b4f"]}]},options:{plugins:{legend:{position:"bottom"}},scales:{y:{grid:{color:function(c){return c.tick.value===0?"#B72F05":"rgba(134,150,162,0.3)";},lineWidth:function(c){return c.tick.value===0?1.5:0.5;}}}}}});
+
+</script>
 
 </body>
 </html>
